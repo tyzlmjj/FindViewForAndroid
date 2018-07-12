@@ -1,0 +1,34 @@
+<idea-plugin>
+    <id>me.majiajie.ideaplugin.findviewforandroid</id>
+    <name>FindViewForAndroid</name>
+    <version>1.0</version>
+    <vendor email="tyzl931019@gmail.com" url="https://github.com/tyzlmjj">MJJ</vendor>
+
+    <description>Generate Android 'findViewById' code</description>
+
+    <change-notes>
+        nothing
+    </change-notes>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+    <idea-version since-build="173.0"/>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    <depends>com.intellij.modules.lang</depends>
+    -->
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+    </extensions>
+
+    <actions>
+        <action id="me.majiajie.FindViewForAndroid.GenerateFindView" class="action.GenerateFindViewAction"
+                text="Generate FindViewById" description="Generate &#39;findViewById&#39; code">
+            <add-to-group group-id="XmlGenerateToolsGroup" relative-to-action="GenerateDTD" anchor="before"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl I"/>
+        </action>
+    </actions>
+
+</idea-plugin>

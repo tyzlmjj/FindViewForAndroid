@@ -1,0 +1,26 @@
+plugins {
+    id "org.jetbrains.intellij" version "0.3.4"
+    id "org.jetbrains.kotlin.jvm" version "1.2.51"
+}
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    jcenter()
+}
+
+intellij {
+    pluginName 'FindViewForAndroid'
+    plugins 'android'
+    updateSinceUntilBuild false
+    localPath '/Users/mjj/Library/Application Support/JetBrains/Toolbox/apps/IDEA-U/ch-0/181.5087.20/IntelliJ IDEA.app'
+}
+
+dependencies {
+    
+}
+
+group 'me.majiajie'
+version '1.0'
