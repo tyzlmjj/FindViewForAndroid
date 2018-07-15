@@ -2,7 +2,7 @@
     <id>me.majiajie.ideaplugin.findviewforandroid</id>
     <name>FindViewForAndroid</name>
     <version>1.0</version>
-    <vendor email="tyzl931019@gmail.com" url="https://github.com/tyzlmjj/FindViewForAdnroid">MJJ</vendor>
+    <vendor email="tyzl931019@gmail.com" url="https://github.com/tyzlmjj/FindViewForAndroid">MJJ</vendor>
 
     <description>Generate Android 'findViewById' code.Support for Java and Kotlin.</description>
 
