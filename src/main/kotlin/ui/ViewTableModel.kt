@@ -44,8 +44,8 @@ class ViewTableModel internal constructor(private val mViewInfoList: List<ViewIn
         val viewInfo = mViewInfoList[rowIndex]
         when (columnIndex) {
             0 -> return viewInfo.isChecked
-            1 -> return viewInfo.element.name
-            2 -> return viewInfo.element.id
+            1 -> return viewInfo.element.viewName!!
+            2 -> return viewInfo.element.id!!
             3 -> return viewInfo.element.getFieldName(mAddM)
         }
         return ""

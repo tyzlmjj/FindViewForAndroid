@@ -1,14 +1,26 @@
 package bean
 
 
-class ViewInfo(@JvmField var isChecked: Boolean, var element: Element) {
+class ViewInfo(var isChecked: Boolean, var element: Element) {
 
     fun getKTString(addM: Boolean, isPrivate: Boolean, rootView: String): String {
-        return String.format(CODE_T_ACTIVITY, if (isPrivate) "private " else "", element.getFieldName(addM), element.name, rootView, element.name, element.id)
+        return String.format(CODE_TEMPLATE_KOTLIN, if (isPrivate) "private " else "", element.getFieldName(addM), element.viewName, if (rootView.isEmpty()) "" else "$rootView.", element.viewName, element.id)
+    }
+
+    fun getJavaFieldString(addM: Boolean, isPrivate: Boolean): String {
+        return String.format(CODE_TEMPLATE_JAVA_FIELD, if (isPrivate) "private " else "",element.viewName, element.getFieldName(addM))
+    }
+
+    fun getJavaFindViewString(addM: Boolean, isTarget26:Boolean,rootView: String): String {
+        return String.format(CODE_TEMPLATE_JAVA_FINDVIEW,element.getFieldName(addM), if (isTarget26) "" else "(${element.viewName}) ",if (rootView.isEmpty()) "" else "$rootView.", element.id)
     }
 
     companion object {
 
-        private val CODE_T_ACTIVITY = "%sval %s: %s by lazy { %sfindViewById<%s>(R.id.%s) }\n"
+        private const val CODE_TEMPLATE_KOTLIN = "%sval %s: %s by lazy { %sfindViewById<%s>(R.id.%s) }"
+
+        private const val CODE_TEMPLATE_JAVA_FIELD = "%s%s %s;"
+
+        private const val CODE_TEMPLATE_JAVA_FINDVIEW = "%s = %s%sfindViewById(R.id.%s);"
     }
 }

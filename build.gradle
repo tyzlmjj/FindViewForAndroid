@@ -11,11 +11,14 @@ repositories {
     jcenter()
 }
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
 intellij {
     pluginName 'FindViewForAndroid'
     plugins 'android'
     updateSinceUntilBuild false
-    localPath '/Users/mjj/Library/Application Support/JetBrains/Toolbox/apps/IDEA-U/ch-0/181.5087.20/IntelliJ IDEA.app'
+    localPath properties.IntelliJ_IDEA_PATH as String
 }
 
 dependencies {

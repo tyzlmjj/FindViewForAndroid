@@ -27,7 +27,7 @@ fun BaseJDialog.init(){
 
     this.setContentPane(contentPane)
     this.isModal = true
-    this.getRootPane().defaultButton = buttonOK
+    this.rootPane.defaultButton = buttonOK
 
     // 确认按钮
     buttonOK?.addActionListener { onOK() }

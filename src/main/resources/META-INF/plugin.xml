@@ -2,12 +2,12 @@
     <id>me.majiajie.ideaplugin.findviewforandroid</id>
     <name>FindViewForAndroid</name>
     <version>1.0</version>
-    <vendor email="tyzl931019@gmail.com" url="https://github.com/tyzlmjj">MJJ</vendor>
+    <vendor email="tyzl931019@gmail.com" url="https://github.com/tyzlmjj/FindViewForAdnroid">MJJ</vendor>
 
-    <description>Generate Android 'findViewById' code</description>
+    <description>Generate Android 'findViewById' code.Support for Java and Kotlin.</description>
 
     <change-notes>
-        nothing
+        1.0 ...
     </change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->

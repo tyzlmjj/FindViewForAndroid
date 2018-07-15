@@ -136,7 +136,7 @@ class KotlinDialog(list: List<Element>) : BaseJDialog() {
      * 生成代码
      */
     private fun generateCode() {
-        tvCode!!.text = mViewInfoList.gengrateKTCode(addMCheckBox!!.isSelected, isPrivateCheckBox!!.isSelected, if (isFragmentRadioButton!!.isSelected) "view." else "")
+        tvCode!!.text = mViewInfoList.gengrateKTCode(addMCheckBox!!.isSelected, isPrivateCheckBox!!.isSelected, if (isFragmentRadioButton!!.isSelected) "view" else "")
     }
 
 }

@@ -90,9 +90,9 @@ public class LayoutUtils {
                     }
 
                     try {
-                        Element e = new Element(name, value, tag);
+                        Element e = new Element(name, value);
                         elements.add(e);
-                    } catch (IllegalArgumentException e) {
+                    } catch (Exception e) {
                         // TODO log
                     }
                 }

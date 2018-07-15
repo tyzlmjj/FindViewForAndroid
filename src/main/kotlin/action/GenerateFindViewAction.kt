@@ -7,9 +7,11 @@ import com.intellij.openapi.actionSystem.LangDataKeys
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
+import com.intellij.psi.PsiFile
 import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
 import org.apache.http.util.TextUtils
+import ui.JavaDialog
 import ui.KotlinDialog
 import ui.XMLDialog
 import utils.LayoutUtils
@@ -40,8 +42,10 @@ class GenerateFindViewAction : AnAction() {
             "KOTLIN" -> if (checkSelectedText(e, project)) {
                 showGenerateKotlinCodeDialog(searchFileAndGetElementList(project))
             }
-            "JAVA" -> Messages.showInfoMessage(project, "JAVA类文件", "提示")
-            "XML" -> showGenerateXMLDialog(LayoutUtils.getIDsFromLayout(psiFile))
+            "JAVA" -> if (checkSelectedText(e, project)) {
+                showGenerateJavaCodeDialog(searchFileAndGetElementList(project))
+            }
+            "XML" -> showGenerateXMLDialog(psiFile, LayoutUtils.getIDsFromLayout(psiFile))
             else -> Messages.showWarningDialog(project, "不支持的文件类型: " + psiFile.fileType.name, "警告")
         }
     }
@@ -92,10 +96,22 @@ class GenerateFindViewAction : AnAction() {
 
     /**
      * 显示生成代码的Dialog(XML)
+     * @param psiFile   文件
      * @param elements  view数据
      */
-    private fun showGenerateXMLDialog(elements: ArrayList<Element>) {
-        val dialog = XMLDialog(elements)
+    private fun showGenerateXMLDialog(psiFile: PsiFile, elements: ArrayList<Element>) {
+        val dialog = XMLDialog(psiFile,elements)
+        dialog.pack()
+        dialog.isVisible = true
+    }
+
+    /**
+     * 显示生成代码的Dialog(JAVA)
+     * @param psiFile   文件
+     * @param elements  view数据
+     */
+    private fun showGenerateJavaCodeDialog(elements: ArrayList<Element>) {
+        val dialog = JavaDialog(elements)
         dialog.pack()
         dialog.isVisible = true
     }
