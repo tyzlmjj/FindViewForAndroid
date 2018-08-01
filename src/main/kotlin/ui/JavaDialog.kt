@@ -1,6 +1,9 @@
 package ui
 
 import bean.*
+import extensions.gengrateJavaCode
+import extensions.toClipboard
+import extensions.toViewInfoList
 import javax.swing.*
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
@@ -126,7 +129,6 @@ class JavaDialog(list: List<Element>) : BaseJDialog() {
     private fun bindData() {
         // 适配表格
         viewTable!!.model = mViewTableModel
-
         generateCode()
     }
 

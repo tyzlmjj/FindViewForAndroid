@@ -3,8 +3,6 @@ plugins {
     id "org.jetbrains.kotlin.jvm" version "1.2.51"
 }
 
-apply plugin: 'java'
-
 sourceCompatibility = 1.8
 
 repositories {
@@ -18,11 +16,11 @@ intellij {
     pluginName 'FindViewForAndroid'
     plugins 'android'
     updateSinceUntilBuild false
-    localPath properties.IntelliJ_IDEA_PATH as String
+    localPath properties.ANDROID_STUDIO_PATH as String
 }
 
 dependencies {
-    
+    implementation "org.jetbrains.kotlin:kotlin-compiler"
 }
 
 group 'me.majiajie'

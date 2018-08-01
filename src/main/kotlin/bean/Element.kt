@@ -1,5 +1,6 @@
 package bean
 
+import extensions.firstToUpperCase
 import java.util.regex.Pattern
 
 class Element(viewClassName: String, viewId: String) {
@@ -11,7 +12,7 @@ class Element(viewClassName: String, viewId: String) {
 
     init {
         // id
-        val matcher = sIdPattern.matcher(viewId)
+        val matcher = mIdPattern.matcher(viewId)
         if (matcher.find() && matcher.groupCount() > 1) {
             this.id = matcher.group(2)
 
@@ -84,13 +85,13 @@ class Element(viewClassName: String, viewId: String) {
      * 验证变量名称有效性
      */
     fun checkValidity(): Boolean {
-        val matcher = sValidityPattern.matcher(getFieldName(false))
+        val matcher = mValidityPattern.matcher(getFieldName(false))
         return matcher.find()
     }
 
     companion object {
 
-        private val sIdPattern = Pattern.compile("@\\+?(android:)?id/([^$]+)$", Pattern.CASE_INSENSITIVE)
-        private val sValidityPattern = Pattern.compile("^([a-zA-Z_\\$][\\w\\$]*)$", Pattern.CASE_INSENSITIVE)
+        private val mIdPattern = Pattern.compile("@\\+?(android:)?id/([^$]+)$", Pattern.CASE_INSENSITIVE)
+        private val mValidityPattern = Pattern.compile("^([a-zA-Z_\\$][\\w\\$]*)$", Pattern.CASE_INSENSITIVE)
     }
 }

@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>me.majiajie.ideaplugin.findviewforandroid</id>
     <name>FindViewForAndroid</name>
-    <version>1.0</version>
+    <version>1.1</version>
     <vendor email="tyzl931019@gmail.com" url="https://github.com/tyzlmjj/FindViewForAndroid">MJJ</vendor>
 
     <description>Generate Android 'findViewById' code.Support for Java and Kotlin.</description>
@@ -19,9 +19,11 @@
     <depends>com.intellij.modules.lang</depends>
     -->
 
-    <extensions defaultExtensionNs="com.intellij">
+    <extensions defaultExtensionNs="com.intellij" >
         <!-- Add your extensions here -->
     </extensions>
+
+    <depends>org.jetbrains.kotlin</depends>
 
     <actions>
         <action id="me.majiajie.FindViewForAndroid.GenerateFindView" class="action.GenerateFindViewAction"

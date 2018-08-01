@@ -1,16 +1,11 @@
 package ui
 
 import bean.*
-import com.android.internal.R.id.list
 import com.intellij.psi.PsiFile
+import extensions.*
 
 import javax.swing.*
-import java.awt.*
-import java.awt.datatransfer.Clipboard
-import java.awt.datatransfer.StringSelection
-import java.awt.datatransfer.Transferable
 import java.awt.event.*
-import java.util.ArrayList
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 

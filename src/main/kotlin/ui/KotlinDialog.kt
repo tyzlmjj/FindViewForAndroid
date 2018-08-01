@@ -1,27 +1,29 @@
 package ui
 
 import bean.*
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.Messages
+import com.intellij.psi.PsiClass
+import com.intellij.psi.PsiFile
+import com.intellij.psi.util.PsiTreeUtil
+import extensions.gengrateKTCode
+import extensions.toClipboard
+import extensions.toKtProperty
+import extensions.toViewInfoList
+import org.jetbrains.kotlin.psi.KtClass
+import utils.KtFileWriteUtils
 
 import javax.swing.*
-import javax.swing.event.ChangeEvent
-import javax.swing.event.ChangeListener
-import javax.swing.table.AbstractTableModel
-import javax.swing.table.TableColumn
-import java.awt.*
-import java.awt.datatransfer.Clipboard
-import java.awt.datatransfer.StringSelection
-import java.awt.datatransfer.Transferable
-import java.awt.event.*
-import java.util.ArrayList
 
 /**
  * Kotlin文件中生成时使用
  */
-class KotlinDialog(list: List<Element>) : BaseJDialog() {
+class KotlinDialog(val project: Project,val psiFile: PsiFile, list: List<Element>) : BaseJDialog() {
 
     override var contentPane: JPanel? = null
     override var buttonOK: JButton? = null
     override var buttonCancel: JButton? = null
+    private var buttonCopyCode: JButton? = null
     private var tvCode: JTextArea? = null
     private var viewTable: JTable? = null
     private var selectAllButton: JButton? = null
@@ -100,6 +102,12 @@ class KotlinDialog(list: List<Element>) : BaseJDialog() {
 
         // Activity
         isActivityRadioButton!!.addActionListener { generateCode() }
+
+        // Copy Code
+        buttonCopyCode!!.addActionListener {
+            tvCode!!.text.toClipboard()
+            dispose()
+        }
     }
 
     /**
@@ -121,8 +129,15 @@ class KotlinDialog(list: List<Element>) : BaseJDialog() {
      * 确认
      */
     override fun onOK() {
-        tvCode!!.text.toClipboard()
-        dispose()
+
+        val psiClass:KtClass? = PsiTreeUtil.findChildOfAnyType(psiFile, KtClass::class.java)
+        if(psiClass == null){
+            Messages.showErrorDialog(project, "无法找到类文件", "错误")
+        } else {
+            KtFileWriteUtils.addPropertyToKtClass(project,psiClass,mViewInfoList.toKtProperty(project,addMCheckBox!!.isSelected, isPrivateCheckBox!!.isSelected, if (isFragmentRadioButton!!.isSelected) "view" else ""))
+            dispose()
+        }
+
     }
 
     /**
