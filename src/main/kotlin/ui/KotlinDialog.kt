@@ -3,22 +3,19 @@ package ui
 import bean.*
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
-import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiFile
-import com.intellij.psi.util.PsiTreeUtil
 import extensions.gengrateKTCode
 import extensions.toClipboard
-import extensions.toKtProperty
 import extensions.toViewInfoList
-import org.jetbrains.kotlin.psi.KtClass
-import utils.KtFileWriteUtils
+import helper.KtFileWriteHelper
 
 import javax.swing.*
 
 /**
  * Kotlin文件中生成时使用
  */
-class KotlinDialog(val project: Project,val psiFile: PsiFile, list: List<Element>) : BaseJDialog() {
+class KotlinDialog(private val project: Project, private val psiFile: PsiFile, list: List<Element>)
+    : BaseJDialog() {
 
     override var contentPane: JPanel? = null
     override var buttonOK: JButton? = null
@@ -37,7 +34,7 @@ class KotlinDialog(val project: Project,val psiFile: PsiFile, list: List<Element
     private var mViewInfoList = list.toViewInfoList()
 
     private val mViewTableModel = ViewTableModel(mViewInfoList, addMCheckBox!!.isSelected,
-            object: ViewTableModel.TableEditListener {
+            object : ViewTableModel.TableEditListener {
                 override fun onEdited() {
                     generateCode()
                 }
@@ -47,7 +44,7 @@ class KotlinDialog(val project: Project,val psiFile: PsiFile, list: List<Element
     init {
         title = "Generate findViewById code (Kotlin)"
 
-        layoutSize(700, 400)
+        layoutSize(700, 520)
 
         init()
 
@@ -129,15 +126,17 @@ class KotlinDialog(val project: Project,val psiFile: PsiFile, list: List<Element
      * 确认
      */
     override fun onOK() {
+        try {
+            val addM = addMCheckBox!!.isSelected
+            val isPrivate = isPrivateCheckBox!!.isSelected
+            val rootView = if (isFragmentRadioButton!!.isSelected) "view!!" else ""
 
-        val psiClass:KtClass? = PsiTreeUtil.findChildOfAnyType(psiFile, KtClass::class.java)
-        if(psiClass == null){
-            Messages.showErrorDialog(project, "无法找到类文件", "错误")
-        } else {
-            KtFileWriteUtils.addPropertyToKtClass(project,psiClass,mViewInfoList.toKtProperty(project,addMCheckBox!!.isSelected, isPrivateCheckBox!!.isSelected, if (isFragmentRadioButton!!.isSelected) "view" else ""))
+            KtFileWriteHelper<Any>(project, psiFile, mViewInfoList, addM, isPrivate, rootView)
+                    .execute()
             dispose()
+        } catch (e: Exception) {
+            Messages.showErrorDialog(e.message, "Generate code error")
         }
-
     }
 
     /**
@@ -151,7 +150,14 @@ class KotlinDialog(val project: Project,val psiFile: PsiFile, list: List<Element
      * 生成代码
      */
     private fun generateCode() {
-        tvCode!!.text = mViewInfoList.gengrateKTCode(addMCheckBox!!.isSelected, isPrivateCheckBox!!.isSelected, if (isFragmentRadioButton!!.isSelected) "view" else "")
+        val addM = addMCheckBox!!.isSelected
+        val isPrivate = isPrivateCheckBox!!.isSelected
+        val rootView = if (isFragmentRadioButton!!.isSelected) "view!!" else ""
+
+        tvCode!!.text = mViewInfoList.gengrateKTCode(addM, isPrivate, rootView)
+
+        // 将光标移动到开始位置（用于控制垂直滚动在代码生成后一直在顶部）
+        tvCode!!.caretPosition = 0
     }
 
 }

@@ -23,12 +23,12 @@ class ViewTableModel internal constructor(private val mViewInfoList: List<ViewIn
     }
 
     override fun getColumnName(column: Int): String {
-        when (column) {
-            0 -> return "select"
-            1 -> return "type"
-            2 -> return "id"
-            3 -> return "name"
-            else -> return "unknow"
+        return when (column) {
+            0 -> "select"
+            1 -> "type"
+            2 -> "id"
+            3 -> "name"
+            else -> "unknow"
         }
     }
 

@@ -11,10 +11,6 @@ import com.intellij.psi.xml.XmlTag
 import utils.AndroidLayoutUtils
 import java.util.ArrayList
 
-/**
- * Psi文件处理扩展
- */
-
 
 /**
  * 在指定范围内寻找文件

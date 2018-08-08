@@ -7,5 +7,5 @@
 /build
 /captures
 .externalNativeBuild
-
-*.apk
+/src/test
+/out

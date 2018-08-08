@@ -49,7 +49,7 @@ class XMLDialog(private val file: PsiFile, list: List<Element>) : BaseJDialog() 
         title = "Generate findViewById code (XML)"
 
         // 设置大小和位置
-        layoutSize(800, 400)
+        layoutSize(800, 550)
 
         init()
 
@@ -279,5 +279,7 @@ class XMLDialog(private val file: PsiFile, list: List<Element>) : BaseJDialog() 
             }
         }
 
+        // 将光标移动到开始位置（用于控制垂直滚动在代码生成后一直在顶部）
+        tvCode!!.caretPosition = 0
     }
 }

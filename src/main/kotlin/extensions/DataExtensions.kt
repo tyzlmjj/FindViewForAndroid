@@ -3,6 +3,9 @@ package extensions
 import bean.Element
 import bean.ViewInfo
 import com.intellij.openapi.project.Project
+import com.intellij.psi.JavaPsiFacade
+import com.intellij.psi.PsiField
+import com.intellij.psi.PsiFile
 import org.jetbrains.kotlin.psi.KtProperty
 import org.jetbrains.kotlin.psi.KtPsiFactory
 import java.awt.Toolkit
@@ -29,16 +32,6 @@ fun String.firstToUpperCase(): String {
  * Element to ViewInfo
  */
 fun List<Element>.toViewInfoList() = this.map { ViewInfo(true, it) }
-
-/**
- * 转换成KtProperty
- */
-fun List<ViewInfo>.toKtProperty(project: Project, addM: Boolean, isPrivate: Boolean, rootView: String): List<KtProperty> {
-    val ktPsiFactory = KtPsiFactory(project)
-    return this.filter { it.isChecked }.map {
-        ktPsiFactory.createProperty(it.getKTString(addM, isPrivate, rootView))
-    }
-}
 
 /**
  * 生成Kotlin代码
@@ -82,7 +75,6 @@ fun List<ViewInfo>.gengrateJavaCode(addM: Boolean, rootView: String, isPrivate: 
     val findViewStr = infos.joinToString("\n") { it.getJavaFindViewString(addM, isTarget26, rootView) }
 
     return "$fieldStr\n\n$findViewStr"
-
 }
 
 /**

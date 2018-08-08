@@ -35,44 +35,43 @@ class GenerateFindViewAction : AnAction() {
         // 获取焦点文件
         val psiFile = e.getData(LangDataKeys.PSI_FILE)
         if (psiFile == null) {
-            Messages.showWarningDialog(project, "文件无法识别", "异常")
+            Messages.showWarningDialog(project, "No focus file", "ERROE")
             return
         }
 
         when (psiFile.fileType.name.toUpperCase()) {
             "KOTLIN" -> {
-                if (checkSelectedText(e, project)) {
-                    showGenerateKotlinCodeDialog(project,psiFile,searchFileAndGetElementList(project, psiFile))
+                if (checkSelectedText(e)) {
+                    showGenerateKotlinCodeDialog(project, psiFile, searchFileAndGetElementList(project, psiFile))
+                } else {
+                    Messages.showErrorDialog("Layout file name is not selected", "ERROE")
                 }
             }
             "JAVA" -> {
-                if (checkSelectedText(e, project)) {
-                    showGenerateJavaCodeDialog(project,psiFile,searchFileAndGetElementList(project, psiFile))
+                if (checkSelectedText(e)) {
+                    showGenerateJavaCodeDialog(project, psiFile, searchFileAndGetElementList(project, psiFile))
+                } else {
+                    Messages.showErrorDialog("Layout file name is not selected", "ERROE")
                 }
             }
             "XML" -> {
                 showGenerateXMLDialog(psiFile, psiFile.getAndroidViewIds())
             }
-            else -> Messages.showWarningDialog(project, "不支持的文件类型: " + psiFile.fileType.name, "警告")
+            else -> Messages.showWarningDialog(project, "This file type (${psiFile.fileType.name}) is not supported", "Warning")
         }
     }
 
     /**
      * 检查是否选中字符串
      */
-    private fun checkSelectedText(e: AnActionEvent, project: Project): Boolean {
+    private fun checkSelectedText(e: AnActionEvent): Boolean {
         // 获取选中内容
         val editor = e.getData(PlatformDataKeys.EDITOR) ?: return false
 
         val model = editor.selectionModel
         mSelectedText = model.selectedText
 
-        if (TextUtils.isEmpty(mSelectedText)) {
-            Messages.showErrorDialog(project, "未选择layout文件名", "错误")
-            return false
-        }
-
-        return true
+        return !TextUtils.isEmpty(mSelectedText)
     }
 
     /**
@@ -82,20 +81,19 @@ class GenerateFindViewAction : AnAction() {
 
         val file = AndroidLayoutUtils.findLayoutResourceFile(psiFile, project, "$mSelectedText.xml")
 
-        if (file == null) {
-            Messages.showErrorDialog(project, "未找到选中的布局文件", "错误")
-            return ArrayList()
+        return if (file == null) {
+            ArrayList()
+        } else {
+            // 解析布局文件中所有View的ID
+            file.getAndroidViewIds()
         }
-
-        // 解析布局文件中所有View的ID
-        return file.getAndroidViewIds()
     }
 
     /**
      * 显示生成代码的Dialog(Kotlin)
      */
-    private fun showGenerateKotlinCodeDialog(project: Project,psiFile: PsiFile,elements: ArrayList<Element>) {
-        val dialog = KotlinDialog(project,psiFile,elements)
+    private fun showGenerateKotlinCodeDialog(project: Project, psiFile: PsiFile, elements: ArrayList<Element>) {
+        val dialog = KotlinDialog(project, psiFile, elements)
         dialog.pack()
         dialog.isVisible = true
     }
@@ -112,8 +110,8 @@ class GenerateFindViewAction : AnAction() {
     /**
      * 显示生成代码的Dialog(JAVA)
      */
-    private fun showGenerateJavaCodeDialog(project: Project,psiFile: PsiFile,elements: ArrayList<Element>) {
-        val dialog = JavaDialog(elements)
+    private fun showGenerateJavaCodeDialog(project: Project, psiFile: PsiFile, elements: ArrayList<Element>) {
+        val dialog = JavaDialog(project, psiFile, elements)
         dialog.pack()
         dialog.isVisible = true
     }
