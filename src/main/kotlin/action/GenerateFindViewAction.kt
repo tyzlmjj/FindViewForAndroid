@@ -1,18 +1,16 @@
 package action
 
 import bean.Element
-import extensions.findFiles
+import bean.SelectedInfo
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.LangDataKeys
 import com.intellij.openapi.actionSystem.PlatformDataKeys
-import com.intellij.openapi.module.ModuleUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
 import com.intellij.psi.PsiFile
-import com.intellij.psi.search.GlobalSearchScope
 import extensions.getAndroidViewIds
-import org.apache.http.util.TextUtils
+import extensions.getParentMethod
 import ui.JavaDialog
 import ui.KotlinDialog
 import ui.XMLDialog
@@ -26,7 +24,7 @@ import java.util.ArrayList
  */
 class GenerateFindViewAction : AnAction() {
 
-    private var mSelectedText: String? = null
+    private var selectedInfo: SelectedInfo? = null
 
     override fun actionPerformed(e: AnActionEvent) {
         // 获取project
@@ -41,15 +39,15 @@ class GenerateFindViewAction : AnAction() {
 
         when (psiFile.fileType.name.toUpperCase()) {
             "KOTLIN" -> {
-                if (checkSelectedText(e)) {
+                if (hasSelectedText(e)) {
                     showGenerateKotlinCodeDialog(project, psiFile, searchFileAndGetElementList(project, psiFile))
                 } else {
                     Messages.showErrorDialog("Layout file name is not selected", "ERROE")
                 }
             }
             "JAVA" -> {
-                if (checkSelectedText(e)) {
-                    showGenerateJavaCodeDialog(project, psiFile, searchFileAndGetElementList(project, psiFile))
+                if (hasSelectedText(e)) {
+                    showGenerateJavaCodeDialog(project, selectedInfo!!, psiFile, searchFileAndGetElementList(project, psiFile))
                 } else {
                     Messages.showErrorDialog("Layout file name is not selected", "ERROE")
                 }
@@ -64,14 +62,18 @@ class GenerateFindViewAction : AnAction() {
     /**
      * 检查是否选中字符串
      */
-    private fun checkSelectedText(e: AnActionEvent): Boolean {
+    private fun hasSelectedText(e: AnActionEvent): Boolean {
         // 获取选中内容
         val editor = e.getData(PlatformDataKeys.EDITOR) ?: return false
 
         val model = editor.selectionModel
-        mSelectedText = model.selectedText
-
-        return !TextUtils.isEmpty(mSelectedText)
+        val text = model.selectedText
+        return if (text == null || text.isEmpty()){
+            false
+        } else {
+            selectedInfo = SelectedInfo(text,model.selectionStart)
+            true
+        }
     }
 
     /**
@@ -79,7 +81,7 @@ class GenerateFindViewAction : AnAction() {
      */
     private fun searchFileAndGetElementList(project: Project, psiFile: PsiFile): ArrayList<Element> {
 
-        val file = AndroidLayoutUtils.findLayoutResourceFile(psiFile, project, "$mSelectedText.xml")
+        val file = AndroidLayoutUtils.findLayoutResourceFile(psiFile, project, "${selectedInfo?.text}.xml")
 
         return if (file == null) {
             ArrayList()
@@ -110,8 +112,8 @@ class GenerateFindViewAction : AnAction() {
     /**
      * 显示生成代码的Dialog(JAVA)
      */
-    private fun showGenerateJavaCodeDialog(project: Project, psiFile: PsiFile, elements: ArrayList<Element>) {
-        val dialog = JavaDialog(project, psiFile, elements)
+    private fun showGenerateJavaCodeDialog(project: Project, selectedInfo: SelectedInfo, psiFile: PsiFile, elements: ArrayList<Element>) {
+        val dialog = JavaDialog(project,selectedInfo, psiFile, elements)
         dialog.pack()
         dialog.isVisible = true
     }

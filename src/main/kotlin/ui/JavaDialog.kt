@@ -4,6 +4,8 @@ import bean.*
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
 import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiMethod
+import com.intellij.psi.impl.source.tree.java.PsiCodeBlockImpl
 import extensions.gengrateJavaCode
 import extensions.toClipboard
 import extensions.toViewInfoList
@@ -12,7 +14,9 @@ import javax.swing.*
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 
-class JavaDialog(private val project: Project, private val psiFile: PsiFile, list: List<Element>) : BaseJDialog() {
+class JavaDialog(private val project: Project,
+                 private val selectedInfo: SelectedInfo,
+                 private val psiFile: PsiFile, list: List<Element>) : BaseJDialog() {
 
     override var contentPane: JPanel? = null
     override var buttonOK: JButton? = null
@@ -30,6 +34,7 @@ class JavaDialog(private val project: Project, private val psiFile: PsiFile, lis
     private var edtRootView: JTextField? = null
 
     private var isTarget26CheckBox: JCheckBox? = null
+    private var isLocalVariableCheckBox: JCheckBox? = null
 
     private var mViewInfoList = list.toViewInfoList()
 
@@ -101,12 +106,16 @@ class JavaDialog(private val project: Project, private val psiFile: PsiFile, lis
             generateCode()
         }
 
+        // 是否为局部变量
+        isLocalVariableCheckBox!!.addActionListener {
+            generateCode()
+        }
+
         // 添加rootView
         addRootViewCheckBox!!.addActionListener {
             edtRootView!!.isEnabled = addRootViewCheckBox!!.isSelected
             generateCode()
         }
-
 
         // 输入rootView名称
         edtRootView!!.document.addDocumentListener(object : DocumentListener {
@@ -152,7 +161,8 @@ class JavaDialog(private val project: Project, private val psiFile: PsiFile, lis
             val isPrivate = isPrivateCheckBox!!.isSelected
             val rootView = if (addRootViewCheckBox!!.isSelected) edtRootView!!.text else ""
             val isTarget26 = isTarget26CheckBox!!.isSelected
-            JavaFileWriteHelper<Any>(project, psiFile, mViewInfoList, addM, isPrivate, rootView,isTarget26)
+            val isLocalVariable = isLocalVariableCheckBox!!.isSelected
+            JavaFileWriteHelper<Any>(project, psiFile, selectedInfo, mViewInfoList, addM, isPrivate, rootView, isTarget26, isLocalVariable)
                     .execute()
             dispose()
         } catch (e: Exception) {
@@ -175,8 +185,8 @@ class JavaDialog(private val project: Project, private val psiFile: PsiFile, lis
         val isPrivate = isPrivateCheckBox!!.isSelected
         val rootView = if (addRootViewCheckBox!!.isSelected) edtRootView!!.text else ""
         val isTarget26 = isTarget26CheckBox!!.isSelected
-
-        tvCode!!.text = mViewInfoList.gengrateJavaCode(addM, rootView, isPrivate, isTarget26)
+        val isLocalVariable = isLocalVariableCheckBox!!.isSelected
+        tvCode!!.text = mViewInfoList.gengrateJavaCode(addM, rootView, isPrivate, isTarget26, isLocalVariable)
 
         // 将光标移动到开始位置（用于控制垂直滚动在代码生成后一直在顶部）
         tvCode!!.caretPosition = 0

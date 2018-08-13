@@ -30,6 +30,7 @@ class XMLDialog(private val file: PsiFile, list: List<Element>) : BaseJDialog() 
     private var edtRootView: JTextField? = null
     private var isReclerViewHolderCheckBox: JCheckBox? = null
     private var isTarget26CheckBox: JCheckBox? = null
+    private var isLocalVariableCheckBox: JCheckBox? = null
     private var kotlinPanel: JPanel? = null
     private var javaPanel: JPanel? = null
     private var tvKTViewHolderName: JTextField? = null
@@ -49,7 +50,7 @@ class XMLDialog(private val file: PsiFile, list: List<Element>) : BaseJDialog() 
         title = "Generate findViewById code (XML)"
 
         // 设置大小和位置
-        layoutSize(800, 550)
+        layoutSize(900, 550)
 
         init()
 
@@ -173,6 +174,11 @@ class XMLDialog(private val file: PsiFile, list: List<Element>) : BaseJDialog() 
             generateCode()
         }
 
+        // 是否为局部变量
+        isLocalVariableCheckBox!!.addActionListener {
+            generateCode()
+        }
+
         // 添加rootView
         addRootViewCheckBox!!.addActionListener {
             edtRootView!!.isEnabled = addRootViewCheckBox!!.isSelected
@@ -267,7 +273,7 @@ class XMLDialog(private val file: PsiFile, list: List<Element>) : BaseJDialog() 
                 tvCode!!.text = mViewInfoList.gengrateKTViewHolderCode(file.name.removeSuffix(".xml"), tvKTViewHolderName?.text
                         ?: "", addMCheckBox!!.isSelected, isPrivateCheckBox!!.isSelected)
             } else {
-                tvCode!!.text = mViewInfoList.gengrateKTCode(addMCheckBox!!.isSelected, isPrivateCheckBox!!.isSelected, if (isFragmentRadioButton!!.isSelected) "view" else "")
+                tvCode!!.text = mViewInfoList.gengrateKTCode(addMCheckBox!!.isSelected, isPrivateCheckBox!!.isSelected, if (isFragmentRadioButton!!.isSelected) "view!!" else "")
             }
         } else {// java
             if (isReclerViewHolderCheckBox!!.isSelected) {// viewHolder
@@ -275,7 +281,7 @@ class XMLDialog(private val file: PsiFile, list: List<Element>) : BaseJDialog() 
                         ?: "", addMCheckBox!!.isSelected, isPrivateCheckBox!!.isSelected, isTarget26CheckBox!!.isSelected)
             } else {
                 tvCode!!.text = mViewInfoList.gengrateJavaCode(addMCheckBox!!.isSelected, if (addRootViewCheckBox!!.isSelected) edtRootView!!.text else "",
-                        isPrivateCheckBox!!.isSelected, isTarget26CheckBox!!.isSelected)
+                        isPrivateCheckBox!!.isSelected, isTarget26CheckBox!!.isSelected, isLocalVariableCheckBox!!.isSelected)
             }
         }
 

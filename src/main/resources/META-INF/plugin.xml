@@ -7,8 +7,13 @@
     <description>Generate Android 'findViewById' code.Support for Java and Kotlin.</description>
 
     <change-notes>
-        - V1.1
-        add the function of automatically generating code in the Java or Kotlin class
+        - v1.1.1
+
+
+
+        - v1.1
+
+            add the function of automatically generating code in the Java or Kotlin class
     </change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->

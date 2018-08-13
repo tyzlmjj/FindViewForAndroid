@@ -25,7 +25,11 @@ fun String.toClipboard() {
  * 首字母大写
  */
 fun String.firstToUpperCase(): String {
-    return substring(0, 1).toUpperCase(Locale.getDefault()) + substring(1)
+    val ch = this.toCharArray()
+    if (ch[0] in 'a'..'z') {
+        ch[0] = (ch[0].toInt() - 32).toChar()
+    }
+    return String(ch)
 }
 
 /**
@@ -67,14 +71,15 @@ $fieldStr
 /**
  * 生成Java代码
  */
-fun List<ViewInfo>.gengrateJavaCode(addM: Boolean, rootView: String, isPrivate: Boolean, isTarget26: Boolean): String {
-
+fun List<ViewInfo>.gengrateJavaCode(addM: Boolean, rootView: String, isPrivate: Boolean, isTarget26: Boolean, isLocalVariable: Boolean = false): String {
     val infos = this.filter { it.isChecked }
-
-    val fieldStr = infos.joinToString("\n") { it.getJavaFieldString(addM, isPrivate) }
-    val findViewStr = infos.joinToString("\n") { it.getJavaFindViewString(addM, isTarget26, rootView) }
-
-    return "$fieldStr\n\n$findViewStr"
+    return if (isLocalVariable) {
+        infos.joinToString("\n") { it.getJavaLocalVariableString(addM, isTarget26, rootView) }
+    } else {
+        val fieldStr = infos.joinToString("\n") { it.getJavaFieldString(addM, isPrivate) }
+        val findViewStr = infos.joinToString("\n") { it.getJavaFindViewString(addM, isTarget26, rootView) }
+        "$fieldStr\n\n$findViewStr"
+    }
 }
 
 /**

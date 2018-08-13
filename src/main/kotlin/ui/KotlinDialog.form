@@ -169,7 +169,7 @@
             </constraints>
             <properties>
               <selected value="true"/>
-              <text value="is Activity"/>
+              <text value="Activity"/>
             </properties>
           </component>
           <component id="146e5" class="javax.swing.JRadioButton" binding="isFragmentRadioButton" default-binding="true">
@@ -178,7 +178,7 @@
             </constraints>
             <properties>
               <selected value="false"/>
-              <text value="is Fragment"/>
+              <text value="Fragment"/>
             </properties>
           </component>
           <component id="d6ef0" class="javax.swing.JCheckBox" binding="isPrivateCheckBox" default-binding="true">
@@ -187,7 +187,7 @@
             </constraints>
             <properties>
               <selected value="true"/>
-              <text value="is Private"/>
+              <text value="private"/>
             </properties>
           </component>
         </children>

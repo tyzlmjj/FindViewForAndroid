@@ -2,9 +2,9 @@ package extensions
 
 import bean.Element
 import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
-import com.intellij.psi.XmlRecursiveElementVisitor
+import com.intellij.psi.*
+import com.intellij.psi.impl.source.PsiMethodImpl
+import com.intellij.psi.impl.source.tree.java.PsiCodeBlockImpl
 import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.xml.XmlTag
@@ -65,7 +65,7 @@ fun PsiFile.getAndroidViewIds(): ArrayList<Element> {
                     val e = Element(name!!, value)
                     elements.add(e)
                 } catch (e: Exception) {
-                    // TODO log
+                    e.printStackTrace()
                 }
 
             }
@@ -75,3 +75,51 @@ fun PsiFile.getAndroidViewIds(): ArrayList<Element> {
     return elements
 }
 
+/**
+ * 判断类是否继承Activity
+ */
+fun PsiClass.isExtendsActivity(): Boolean {
+    return this.isExtendsClass("Activity", kotlin.arrayOf("android.app"))
+}
+
+/**
+ * 判断类是否继承Fragment
+ */
+fun PsiClass.isExtendsFragment(): Boolean {
+    return this.isExtendsClass("Fragment", kotlin.arrayOf("android.support.v4.app", "android.app"))
+}
+
+/**
+ * 判断类是否继承DialogFragment
+ */
+fun PsiClass.isExtendsDialogFragment(): Boolean {
+    return this.isExtendsClass("DialogFragment", kotlin.arrayOf("android.support.v4.app", "android.app"))
+}
+
+/**
+ * 判断类是否继承指定的类
+ */
+fun PsiClass.isExtendsClass(className: String, packageNames: Array<String>): Boolean {
+    val superClass = this.superClass
+    return if (superClass == null) {
+        false
+    } else {
+        val psiFile = superClass.containingFile
+        (psiFile is PsiJavaFile && superClass.name == className && packageNames.contains(psiFile.packageName))
+                || superClass.isExtendsClass(className, packageNames)
+    }
+}
+
+/**
+ * 获取指定位置的所在的方法,没有则返回空
+ */
+fun PsiFile.getParentMethod(selectionStart: Int): PsiMethodImpl? {
+    var psiElement: PsiElement? = this.findElementAt(selectionStart)
+    while (psiElement != null) {
+        if (psiElement is PsiMethodImpl) {
+            return psiElement
+        }
+        psiElement = psiElement.parent
+    }
+    return null
+}

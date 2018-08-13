@@ -19,6 +19,10 @@ class ViewInfo(var isChecked: Boolean, var element: Element) {
         return String.format(CODE_TEMPLATE_KOTLIN_INITIALIZER, if (rootView.isEmpty()) "" else "$rootView.", element.viewName, element.id)
     }
 
+    fun getJavaLocalVariableString(addM: Boolean, isTarget26: Boolean, rootView: String): String {
+        return String.format(CODE_TEMPLATE_JAVA_LOCAL_VARIABLE,element.viewName,element.getFieldName(addM), if (isTarget26) "" else "(${element.viewName}) ",if (rootView.isEmpty()) "" else "$rootView.", element.id)
+    }
+
     companion object {
 
         private const val CODE_TEMPLATE_KOTLIN_INITIALIZER = "by lazy { %sfindViewById<%s>(R.id.%s) }"
@@ -28,5 +32,7 @@ class ViewInfo(var isChecked: Boolean, var element: Element) {
         private const val CODE_TEMPLATE_JAVA_FIELD = "%s%s %s;"
 
         private const val CODE_TEMPLATE_JAVA_FINDVIEW = "%s = %s%sfindViewById(R.id.%s);"
+
+        private const val CODE_TEMPLATE_JAVA_LOCAL_VARIABLE = "%s $CODE_TEMPLATE_JAVA_FINDVIEW"
     }
 }
