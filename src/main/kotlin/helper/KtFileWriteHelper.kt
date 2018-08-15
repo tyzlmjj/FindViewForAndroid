@@ -43,24 +43,6 @@ class KtFileWriteHelper<T>(project: Project,
     }
 
     /**
-     * 写局部变量
-     */
-    private fun writeLocalVariable(): Boolean {
-        val function = psiFile.getFunction(selectedInfo.selectionStart)
-        var beforeElement = function?.children?.firstOrNull { it is KtBlockExpression }?.children?.firstOrNull {
-            it.text.matches(Regex(".*R\\..+${selectedInfo.text}.*"))
-        }
-        return if (function == null || beforeElement == null) {
-            false
-        } else {
-            getKtPropertyList().forEach {
-                beforeElement = function.addAfter(it, beforeElement)
-            }
-            true
-        }
-    }
-
-    /**
      * 写成员变量
      */
     private fun writeProperty(ktPsiFactory: KtPsiFactory, ktBoday: KtClassBody) {
@@ -93,6 +75,24 @@ class KtFileWriteHelper<T>(project: Project,
             if (!oldPropertyNames.contains(p.name)) {
                 e = ktBoday.addAfter(p, e)
             }
+        }
+    }
+
+    /**
+     * 写局部变量
+     */
+    private fun writeLocalVariable(): Boolean {
+        val functionBody = psiFile.getFunction(selectedInfo.selectionStart)?.children?.firstOrNull { it is KtBlockExpression }
+        var beforeElement = functionBody?.children?.firstOrNull {
+            it.text.matches(Regex(".*R\\..+${selectedInfo.text}.*"))
+        }
+        return if (functionBody == null || beforeElement == null) {
+            false
+        } else {
+            getKtPropertyList().forEach {
+                beforeElement = functionBody.addAfter(it, beforeElement)
+            }
+            true
         }
     }
 

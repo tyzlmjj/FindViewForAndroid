@@ -4,8 +4,6 @@ import bean.*
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
 import com.intellij.psi.PsiFile
-import com.intellij.psi.PsiMethod
-import com.intellij.psi.impl.source.tree.java.PsiCodeBlockImpl
 import extensions.gengrateJavaCode
 import extensions.toClipboard
 import extensions.toViewInfoList

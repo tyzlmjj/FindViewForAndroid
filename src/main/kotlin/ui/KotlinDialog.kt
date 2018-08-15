@@ -8,8 +8,6 @@ import extensions.gengrateKTCode
 import extensions.toClipboard
 import extensions.toViewInfoList
 import helper.KtFileWriteHelper
-import org.jetbrains.kotlin.psi.KtClass
-import org.jetbrains.kotlin.psi.KtTreeVisitorVoid
 
 import javax.swing.*
 import javax.swing.event.DocumentEvent
