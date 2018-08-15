@@ -3,11 +3,14 @@ package extensions
 import bean.Element
 import com.intellij.openapi.project.Project
 import com.intellij.psi.*
+import com.intellij.psi.impl.source.PsiClassImpl
 import com.intellij.psi.impl.source.PsiMethodImpl
 import com.intellij.psi.impl.source.tree.java.PsiCodeBlockImpl
 import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.xml.XmlTag
+import org.jetbrains.kotlin.psi.KtClass
+import org.jetbrains.kotlin.psi.KtFunction
 import utils.AndroidLayoutUtils
 import java.util.ArrayList
 
@@ -113,7 +116,7 @@ fun PsiClass.isExtendsClass(className: String, packageNames: Array<String>): Boo
 /**
  * 获取指定位置的所在的方法,没有则返回空
  */
-fun PsiFile.getParentMethod(selectionStart: Int): PsiMethodImpl? {
+fun PsiFile.getMethod(selectionStart: Int): PsiMethodImpl? {
     var psiElement: PsiElement? = this.findElementAt(selectionStart)
     while (psiElement != null) {
         if (psiElement is PsiMethodImpl) {
@@ -123,3 +126,46 @@ fun PsiFile.getParentMethod(selectionStart: Int): PsiMethodImpl? {
     }
     return null
 }
+
+/**
+ * 获取指定位置的所在的Java类,没有则返回空
+ */
+fun PsiFile.getJavaClass(selectionStart: Int): PsiClassImpl? {
+    var psiElement: PsiElement? = this.findElementAt(selectionStart)
+    while (psiElement != null) {
+        if (psiElement is PsiClassImpl) {
+            return psiElement
+        }
+        psiElement = psiElement.parent
+    }
+    return null
+}
+
+/**
+ * 获取指定位置的所在的Kotlin类,没有则返回空
+ */
+fun PsiFile.getKotlinClass(selectionStart: Int): KtClass? {
+    var psiElement: PsiElement? = this.findElementAt(selectionStart)
+    while (psiElement != null) {
+        if (psiElement is KtClass) {
+            return psiElement
+        }
+        psiElement = psiElement.parent
+    }
+    return null
+}
+
+/**
+ * 获取指定位置的所在的Kotlin方法,没有则返回空
+ */
+fun PsiFile.getFunction(selectionStart: Int): KtFunction? {
+    var psiElement: PsiElement? = this.findElementAt(selectionStart)
+    while (psiElement != null) {
+        if (psiElement is KtFunction) {
+            return psiElement
+        }
+        psiElement = psiElement.parent
+    }
+    return null
+}
+

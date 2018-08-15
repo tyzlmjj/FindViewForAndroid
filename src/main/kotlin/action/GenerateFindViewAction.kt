@@ -10,7 +10,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
 import com.intellij.psi.PsiFile
 import extensions.getAndroidViewIds
-import extensions.getParentMethod
 import ui.JavaDialog
 import ui.KotlinDialog
 import ui.XMLDialog
@@ -40,7 +39,7 @@ class GenerateFindViewAction : AnAction() {
         when (psiFile.fileType.name.toUpperCase()) {
             "KOTLIN" -> {
                 if (hasSelectedText(e)) {
-                    showGenerateKotlinCodeDialog(project, psiFile, searchFileAndGetElementList(project, psiFile))
+                    showGenerateKotlinCodeDialog(project, selectedInfo!!, psiFile, searchFileAndGetElementList(project, psiFile))
                 } else {
                     Messages.showErrorDialog("Layout file name is not selected", "ERROE")
                 }
@@ -68,10 +67,10 @@ class GenerateFindViewAction : AnAction() {
 
         val model = editor.selectionModel
         val text = model.selectedText
-        return if (text == null || text.isEmpty()){
+        return if (text == null || text.isEmpty()) {
             false
         } else {
-            selectedInfo = SelectedInfo(text,model.selectionStart)
+            selectedInfo = SelectedInfo(text, model.selectionStart)
             true
         }
     }
@@ -94,8 +93,8 @@ class GenerateFindViewAction : AnAction() {
     /**
      * 显示生成代码的Dialog(Kotlin)
      */
-    private fun showGenerateKotlinCodeDialog(project: Project, psiFile: PsiFile, elements: ArrayList<Element>) {
-        val dialog = KotlinDialog(project, psiFile, elements)
+    private fun showGenerateKotlinCodeDialog(project: Project, selectedInfo: SelectedInfo, psiFile: PsiFile, elements: ArrayList<Element>) {
+        val dialog = KotlinDialog(project, psiFile, selectedInfo, elements)
         dialog.pack()
         dialog.isVisible = true
     }
@@ -113,7 +112,7 @@ class GenerateFindViewAction : AnAction() {
      * 显示生成代码的Dialog(JAVA)
      */
     private fun showGenerateJavaCodeDialog(project: Project, selectedInfo: SelectedInfo, psiFile: PsiFile, elements: ArrayList<Element>) {
-        val dialog = JavaDialog(project,selectedInfo, psiFile, elements)
+        val dialog = JavaDialog(project, selectedInfo, psiFile, elements)
         dialog.pack()
         dialog.isVisible = true
     }

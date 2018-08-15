@@ -8,13 +8,21 @@ import extensions.gengrateKTCode
 import extensions.toClipboard
 import extensions.toViewInfoList
 import helper.KtFileWriteHelper
+import org.jetbrains.kotlin.psi.KtClass
+import org.jetbrains.kotlin.psi.KtTreeVisitorVoid
 
 import javax.swing.*
+import javax.swing.event.DocumentEvent
+import javax.swing.event.DocumentListener
 
 /**
  * Kotlin文件中生成时使用
  */
-class KotlinDialog(private val project: Project, private val psiFile: PsiFile, list: List<Element>)
+class KotlinDialog(
+        private val project: Project,
+        private val psiFile: PsiFile,
+        private val selectedInfo: SelectedInfo,
+        list: List<Element>)
     : BaseJDialog() {
 
     override var contentPane: JPanel? = null
@@ -28,6 +36,8 @@ class KotlinDialog(private val project: Project, private val psiFile: PsiFile, l
     private var selectInvert: JButton? = null
     private var isActivityRadioButton: JRadioButton? = null
     private var isFragmentRadioButton: JRadioButton? = null
+    private var isLocalVariableRadioButton: JRadioButton? = null
+    private var edtRootView: JTextField? = null
     private var isPrivateCheckBox: JCheckBox? = null
     private var addMCheckBox: JCheckBox? = null
 
@@ -44,7 +54,7 @@ class KotlinDialog(private val project: Project, private val psiFile: PsiFile, l
     init {
         title = "Generate findViewById code (Kotlin)"
 
-        layoutSize(700, 520)
+        layoutSize(700, 550)
 
         init()
 
@@ -100,11 +110,34 @@ class KotlinDialog(private val project: Project, private val psiFile: PsiFile, l
         // Activity
         isActivityRadioButton!!.addActionListener { generateCode() }
 
+        // Local Variable
+        isLocalVariableRadioButton!!.addActionListener {
+            generateCode()
+            edtRootView!!.isEnabled = isLocalVariableRadioButton!!.isSelected
+        }
+
         // Copy Code
         buttonCopyCode!!.addActionListener {
             tvCode!!.text.toClipboard()
             dispose()
         }
+
+        // 输入RootView名称
+        edtRootView!!.document.addDocumentListener(object : DocumentListener {
+            override fun changedUpdate(e: DocumentEvent?) {}
+
+            override fun insertUpdate(e: DocumentEvent?) {
+                if (isLocalVariableRadioButton!!.isSelected) {
+                    generateCode()
+                }
+            }
+
+            override fun removeUpdate(e: DocumentEvent?) {
+                if (isLocalVariableRadioButton!!.isSelected) {
+                    generateCode()
+                }
+            }
+        })
     }
 
     /**
@@ -115,6 +148,7 @@ class KotlinDialog(private val project: Project, private val psiFile: PsiFile, l
         val group = ButtonGroup()
         group.add(isActivityRadioButton)
         group.add(isFragmentRadioButton)
+        group.add(isLocalVariableRadioButton)
 
         // 适配表格
         viewTable!!.model = mViewTableModel
@@ -129,9 +163,14 @@ class KotlinDialog(private val project: Project, private val psiFile: PsiFile, l
         try {
             val addM = addMCheckBox!!.isSelected
             val isPrivate = isPrivateCheckBox!!.isSelected
-            val rootView = if (isFragmentRadioButton!!.isSelected) "view!!" else ""
+            val isLocalVariable = isLocalVariableRadioButton!!.isSelected
+            val rootView = when {
+                isLocalVariable -> edtRootView!!.text
+                isFragmentRadioButton!!.isSelected -> "view!!"
+                else -> ""
+            }
 
-            KtFileWriteHelper<Any>(project, psiFile, mViewInfoList, addM, isPrivate, rootView)
+            KtFileWriteHelper<Any>(project, psiFile,selectedInfo, mViewInfoList, addM, isPrivate,isLocalVariable, rootView)
                     .execute()
             dispose()
         } catch (e: Exception) {
@@ -152,9 +191,14 @@ class KotlinDialog(private val project: Project, private val psiFile: PsiFile, l
     private fun generateCode() {
         val addM = addMCheckBox!!.isSelected
         val isPrivate = isPrivateCheckBox!!.isSelected
-        val rootView = if (isFragmentRadioButton!!.isSelected) "view!!" else ""
+        val isLocalVariable = isLocalVariableRadioButton!!.isSelected
+        val rootView = when {
+            isLocalVariable -> edtRootView!!.text
+            isFragmentRadioButton!!.isSelected -> "view!!"
+            else -> ""
+        }
 
-        tvCode!!.text = mViewInfoList.gengrateKTCode(addM, isPrivate, rootView)
+        tvCode!!.text = mViewInfoList.gengrateKTCode(addM, isPrivate, isLocalVariable, rootView)
 
         // 将光标移动到开始位置（用于控制垂直滚动在代码生成后一直在顶部）
         tvCode!!.caretPosition = 0

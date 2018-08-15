@@ -40,8 +40,13 @@ fun List<Element>.toViewInfoList() = this.map { ViewInfo(true, it) }
 /**
  * 生成Kotlin代码
  */
-fun List<ViewInfo>.gengrateKTCode(addM: Boolean, isPrivate: Boolean, rootView: String): String {
-    return this.filter { it.isChecked }.joinToString("\n") { it.getKTString(addM, isPrivate, rootView) }
+fun List<ViewInfo>.gengrateKTCode(addM: Boolean, isPrivate: Boolean, isLocalVariable: Boolean, rootView: String): String {
+    return this.filter { it.isChecked }.joinToString("\n") {
+        if (isLocalVariable)
+            it.getKTLocalVariableString(addM, rootView)
+        else
+            it.getKTString(addM, isPrivate, rootView)
+    }
 }
 
 /**

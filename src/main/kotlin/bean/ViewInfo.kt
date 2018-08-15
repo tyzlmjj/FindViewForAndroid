@@ -7,20 +7,20 @@ class ViewInfo(var isChecked: Boolean, var element: Element) {
         return String.format(CODE_TEMPLATE_KOTLIN, if (isPrivate) "private " else "", element.getFieldName(addM), element.viewName, if (rootView.isEmpty()) "" else "$rootView.", element.viewName, element.id)
     }
 
+    fun getKTLocalVariableString(addM: Boolean, rootView: String): String {
+        return String.format(CODE_TEMPLATE_KOTLIN_LOCAL_VARIABLE, element.getFieldName(addM), element.viewName, if (rootView.isEmpty()) "" else "$rootView.", element.id)
+    }
+
     fun getJavaFieldString(addM: Boolean, isPrivate: Boolean): String {
-        return String.format(CODE_TEMPLATE_JAVA_FIELD, if (isPrivate) "private " else "",element.viewName, element.getFieldName(addM))
+        return String.format(CODE_TEMPLATE_JAVA_FIELD, if (isPrivate) "private " else "", element.viewName, element.getFieldName(addM))
     }
 
-    fun getJavaFindViewString(addM: Boolean, isTarget26:Boolean,rootView: String): String {
-        return String.format(CODE_TEMPLATE_JAVA_FINDVIEW,element.getFieldName(addM), if (isTarget26) "" else "(${element.viewName}) ",if (rootView.isEmpty()) "" else "$rootView.", element.id)
-    }
-
-    fun getKTInitializer(rootView: String):String{
-        return String.format(CODE_TEMPLATE_KOTLIN_INITIALIZER, if (rootView.isEmpty()) "" else "$rootView.", element.viewName, element.id)
+    fun getJavaFindViewString(addM: Boolean, isTarget26: Boolean, rootView: String): String {
+        return String.format(CODE_TEMPLATE_JAVA_FINDVIEW, element.getFieldName(addM), if (isTarget26) "" else "(${element.viewName}) ", if (rootView.isEmpty()) "" else "$rootView.", element.id)
     }
 
     fun getJavaLocalVariableString(addM: Boolean, isTarget26: Boolean, rootView: String): String {
-        return String.format(CODE_TEMPLATE_JAVA_LOCAL_VARIABLE,element.viewName,element.getFieldName(addM), if (isTarget26) "" else "(${element.viewName}) ",if (rootView.isEmpty()) "" else "$rootView.", element.id)
+        return String.format(CODE_TEMPLATE_JAVA_LOCAL_VARIABLE, element.viewName, element.getFieldName(addM), if (isTarget26) "" else "(${element.viewName}) ", if (rootView.isEmpty()) "" else "$rootView.", element.id)
     }
 
     companion object {
@@ -28,6 +28,8 @@ class ViewInfo(var isChecked: Boolean, var element: Element) {
         private const val CODE_TEMPLATE_KOTLIN_INITIALIZER = "by lazy { %sfindViewById<%s>(R.id.%s) }"
 
         private const val CODE_TEMPLATE_KOTLIN = "%sval %s: %s $CODE_TEMPLATE_KOTLIN_INITIALIZER"
+
+        private const val CODE_TEMPLATE_KOTLIN_LOCAL_VARIABLE = "val %s: %s = %sfindViewById(R.id.%s)"
 
         private const val CODE_TEMPLATE_JAVA_FIELD = "%s%s %s;"
 

@@ -5,7 +5,6 @@ import bean.ViewInfo
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.project.Project
 import com.intellij.psi.*
-import com.intellij.psi.util.PsiTreeUtil
 import extensions.*
 import org.apache.http.util.TextUtils
 
@@ -25,8 +24,7 @@ class JavaFileWriteHelper<T>(project: Project,
 
     override fun run() {
 
-        val psiClass = PsiTreeUtil.findChildOfAnyType(psiFile, PsiClass::class.java)
-                ?: throw RuntimeException("Java class not found")
+        val psiClass = psiFile.getJavaClass(selectedInfo.selectionStart) ?: throw RuntimeException("Java class not found")
 
         val psiElementFactory = JavaPsiFacade.getElementFactory(project)
 
@@ -82,7 +80,7 @@ class JavaFileWriteHelper<T>(project: Project,
      * 将代码添加到选中内容的代码块内。假如不存在代码块就创建initView()方法
      */
     private fun addJavaStatementToCodeBlock(psiClass: PsiClass, psiElementFactory: PsiElementFactory) {
-        val body = psiFile.getParentMethod(selectedInfo.selectionStart)?.body
+        val body = psiFile.getMethod(selectedInfo.selectionStart)?.body
         if (body != null) {
             var beforeElement = body.children.firstOrNull { it.text.matches(Regex(".*R\\..+${selectedInfo.text}.*")) }
             if (beforeElement == null) {

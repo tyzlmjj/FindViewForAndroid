@@ -21,6 +21,8 @@ class XMLDialog(private val file: PsiFile, list: List<Element>) : BaseJDialog() 
     private var selectInvert: JButton? = null
     private var isActivityRadioButton: JRadioButton? = null
     private var isFragmentRadioButton: JRadioButton? = null
+    private var isLocalVariableRadioButton: JRadioButton? = null
+    private var edtKtRootView: JTextField? = null
     private var isPrivateCheckBox: JCheckBox? = null
     private var addMCheckBox: JCheckBox? = null
     private var kotlinRadioButton: JRadioButton? = null
@@ -125,6 +127,7 @@ class XMLDialog(private val file: PsiFile, list: List<Element>) : BaseJDialog() 
 
         val kotlinTypeAction = ActionListener {
             tvKTViewHolderName!!.isEnabled = isReclerViewHolderRadioButton!!.isSelected
+            edtKtRootView!!.isEnabled = isLocalVariableRadioButton!!.isSelected
 
             if (isReclerViewHolderRadioButton!!.isSelected) {// viewHolder
                 isPrivateCheckBox!!.isSelected = false
@@ -146,6 +149,9 @@ class XMLDialog(private val file: PsiFile, list: List<Element>) : BaseJDialog() 
         // Activity
         isActivityRadioButton!!.addActionListener(kotlinTypeAction)
 
+        // LocalVariable
+        isLocalVariableRadioButton!!.addActionListener(kotlinTypeAction)
+
         // ReclerViewHolder
         isReclerViewHolderRadioButton!!.addActionListener(kotlinTypeAction)
 
@@ -161,6 +167,23 @@ class XMLDialog(private val file: PsiFile, list: List<Element>) : BaseJDialog() 
 
             override fun removeUpdate(e: DocumentEvent?) {
                 if (isReclerViewHolderRadioButton!!.isSelected) {
+                    generateCode()
+                }
+            }
+        })
+
+        // 输入KtRootView名称
+        edtKtRootView!!.document.addDocumentListener(object : DocumentListener {
+            override fun changedUpdate(e: DocumentEvent?) {}
+
+            override fun insertUpdate(e: DocumentEvent?) {
+                if (isLocalVariableRadioButton!!.isSelected) {
+                    generateCode()
+                }
+            }
+
+            override fun removeUpdate(e: DocumentEvent?) {
+                if (isLocalVariableRadioButton!!.isSelected) {
                     generateCode()
                 }
             }
@@ -241,6 +264,7 @@ class XMLDialog(private val file: PsiFile, list: List<Element>) : BaseJDialog() 
         val kotlinGroup = ButtonGroup()
         kotlinGroup.add(isActivityRadioButton)
         kotlinGroup.add(isFragmentRadioButton)
+        kotlinGroup.add(isLocalVariableRadioButton)
         kotlinGroup.add(isReclerViewHolderRadioButton)
 
         // 适配表格
@@ -269,19 +293,33 @@ class XMLDialog(private val file: PsiFile, list: List<Element>) : BaseJDialog() 
      */
     private fun generateCode() {
         if (kotlinRadioButton!!.isSelected) {// kotlin
+            val addM = addMCheckBox!!.isSelected
+            val isPrivate = isPrivateCheckBox!!.isSelected
+            val isLocalVariable = isLocalVariableRadioButton!!.isSelected
+            val rootView = when {
+                isLocalVariable -> edtKtRootView!!.text
+                isFragmentRadioButton!!.isSelected -> "view!!"
+                else -> ""
+            }
+
             if (isReclerViewHolderRadioButton!!.isSelected) {// viewHolder
-                tvCode!!.text = mViewInfoList.gengrateKTViewHolderCode(file.name.removeSuffix(".xml"), tvKTViewHolderName?.text
-                        ?: "", addMCheckBox!!.isSelected, isPrivateCheckBox!!.isSelected)
+                tvCode!!.text = mViewInfoList.gengrateKTViewHolderCode(file.name.removeSuffix(".xml"),
+                        tvKTViewHolderName?.text ?: "", addM, isPrivate)
             } else {
-                tvCode!!.text = mViewInfoList.gengrateKTCode(addMCheckBox!!.isSelected, isPrivateCheckBox!!.isSelected, if (isFragmentRadioButton!!.isSelected) "view!!" else "")
+                tvCode!!.text = mViewInfoList.gengrateKTCode(addM, isPrivate, isLocalVariable, rootView)
             }
         } else {// java
+            val addM = addMCheckBox!!.isSelected
+            val isPrivate = isPrivateCheckBox!!.isSelected
+            val isTarget26 = isTarget26CheckBox!!.isSelected
+            val isLocalVariable = isLocalVariableCheckBox!!.isSelected
+            val rootView = if (addRootViewCheckBox!!.isSelected) edtRootView!!.text else ""
+
             if (isReclerViewHolderCheckBox!!.isSelected) {// viewHolder
-                tvCode!!.text = mViewInfoList.gengrateJavaViewHolderCode(file.name.removeSuffix(".xml"), tvJavaViewHolderName?.text
-                        ?: "", addMCheckBox!!.isSelected, isPrivateCheckBox!!.isSelected, isTarget26CheckBox!!.isSelected)
+                tvCode!!.text = mViewInfoList.gengrateJavaViewHolderCode(file.name.removeSuffix(".xml"),
+                        tvJavaViewHolderName?.text ?: "", addM, isPrivate, isTarget26)
             } else {
-                tvCode!!.text = mViewInfoList.gengrateJavaCode(addMCheckBox!!.isSelected, if (addRootViewCheckBox!!.isSelected) edtRootView!!.text else "",
-                        isPrivateCheckBox!!.isSelected, isTarget26CheckBox!!.isSelected, isLocalVariableCheckBox!!.isSelected)
+                tvCode!!.text = mViewInfoList.gengrateJavaCode(addM, rootView, isPrivate, isTarget26, isLocalVariable)
             }
         }
 
