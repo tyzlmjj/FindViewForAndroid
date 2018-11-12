@@ -47,7 +47,6 @@ fun BaseJDialog.init(){
     contentPane?.registerKeyboardAction({ onCancel() }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 }
 
-
 /**
  * 设置Dialog大小,并居中显示
  */

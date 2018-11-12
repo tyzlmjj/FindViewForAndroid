@@ -3,7 +3,7 @@
   <grid id="cbd77" binding="contentPane" layout-manager="GridLayoutManager" row-count="7" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="10" left="10" bottom="10" right="10"/>
     <constraints>
-      <xy x="48" y="54" width="876" height="571"/>
+      <xy x="48" y="54" width="855" height="571"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -51,8 +51,9 @@
       </grid>
       <scrollpane id="76f59">
         <constraints>
-          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
+          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
             <minimum-size width="-1" height="150"/>
+            <preferred-size width="-1" height="150"/>
           </grid>
         </constraints>
         <properties/>
@@ -70,6 +71,7 @@
         <constraints>
           <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
             <minimum-size width="-1" height="200"/>
+            <preferred-size width="-1" height="200"/>
           </grid>
         </constraints>
         <properties/>
@@ -170,7 +172,7 @@
           <component id="f1314" class="javax.swing.JTextField" binding="tvKTViewHolderName">
             <constraints>
               <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-                <preferred-size width="150" height="-1"/>
+                <preferred-size width="100" height="-1"/>
               </grid>
             </constraints>
             <properties>
@@ -188,10 +190,12 @@
           <component id="fdd08" class="javax.swing.JTextField" binding="edtKtRootView">
             <constraints>
               <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-                <preferred-size width="150" height="-1"/>
+                <preferred-size width="100" height="-1"/>
               </grid>
             </constraints>
-            <properties/>
+            <properties>
+              <enabled value="false"/>
+            </properties>
           </component>
         </children>
       </grid>
@@ -267,7 +271,7 @@
           <component id="897e1" class="javax.swing.JTextField" binding="edtRootView">
             <constraints>
               <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-                <preferred-size width="150" height="-1"/>
+                <preferred-size width="100" height="-1"/>
               </grid>
             </constraints>
             <properties>
@@ -285,7 +289,7 @@
           <component id="62efb" class="javax.swing.JTextField" binding="tvJavaViewHolderName">
             <constraints>
               <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-                <preferred-size width="150" height="-1"/>
+                <preferred-size width="100" height="-1"/>
               </grid>
             </constraints>
             <properties>

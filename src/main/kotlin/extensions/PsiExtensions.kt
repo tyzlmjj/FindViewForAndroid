@@ -5,15 +5,15 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.PsiClassImpl
 import com.intellij.psi.impl.source.PsiMethodImpl
-import com.intellij.psi.impl.source.tree.java.PsiCodeBlockImpl
 import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.xml.XmlTag
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtFunction
+import org.xml.sax.Attributes
+import org.xml.sax.helpers.DefaultHandler
 import utils.AndroidLayoutUtils
 import java.util.ArrayList
-
+import javax.xml.parsers.SAXParserFactory
 
 /**
  * 在指定范围内寻找文件
@@ -26,54 +26,95 @@ fun GlobalSearchScope.findFiles(project: Project, fileName: String): Array<PsiFi
  * 获取XML文件中的Android视图ids
  */
 fun PsiFile.getAndroidViewIds(): ArrayList<Element> {
+
     val elements = ArrayList<Element>()
 
-    this.accept(object : XmlRecursiveElementVisitor() {
+    val factory = SAXParserFactory.newInstance()
+    val parser = factory.newSAXParser()
 
-        override fun visitElement(element: PsiElement) {
-            super.visitElement(element)
+    parser.parse(this.virtualFile.inputStream,object :DefaultHandler(){
+        override fun startElement(uri: String?, localName: String?, qName: String?, attributes: Attributes?) {
+            if ("include".equals(qName, ignoreCase = true)) {
+                val layout = attributes?.getValue("layout")
 
-            if (element is XmlTag) {
+                if (layout != null) {
+                    val project = this@getAndroidViewIds.project
+                    val layoutName = AndroidLayoutUtils.getLayoutName(layout)
+                    val include = if (layoutName == null) null else
+                        AndroidLayoutUtils.findLayoutResourceFile(this@getAndroidViewIds, project, "$layoutName.xml")
 
-                if ("include".equals(element.name, ignoreCase = true)) {
-                    val layout = element.getAttribute("layout", null)
-
-                    if (layout != null) {
-                        val project = this@getAndroidViewIds.project
-                        val layoutName = AndroidLayoutUtils.getLayoutName(layout.value)
-                        val include = if (layoutName == null) null else
-                            AndroidLayoutUtils.findLayoutResourceFile(this@getAndroidViewIds, project, "$layoutName.xml")
-
-                        if (include != null) {
-                            elements.addAll(include.getAndroidViewIds())
-                            return
-                        }
+                    if (include != null) {
+                        elements.addAll(include.getAndroidViewIds())
                     }
                 }
-
+            } else {
                 // get element ID
-                val id = element.getAttribute("android:id", null)
+                val id = attributes?.getValue("android:id")
                         ?: return  // missing android:id attribute
-                val value = id.value
-                        ?: return  // empty value
-
                 // check if there is defined custom class
-                var name: String? = element.name
-                val clazz = element.getAttribute("class", null)
+                var name: String? = qName
+                val clazz = attributes.getValue("class")
                 if (clazz != null) {
-                    name = clazz.value
+                    name = clazz
                 }
 
                 try {
-                    val e = Element(name!!, value)
+                    val e = Element(name!!, id)
                     elements.add(e)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
-
             }
         }
     })
+
+
+//    this.accept(object : XmlRecursiveElementVisitor(true) {
+//
+//        override fun visitElement(element: PsiElement) {
+//            super.visitElement(element)
+//
+//            if (element is XmlTag) {
+//
+//                if ("include".equals(element.name, ignoreCase = true)) {
+//                    val layout = element.getAttribute("layout", null)
+//
+//                    if (layout != null) {
+//                        val project = this@getAndroidViewIds.project
+//                        val layoutName = AndroidLayoutUtils.getLayoutName(layout.value)
+//                        val include = if (layoutName == null) null else
+//                            AndroidLayoutUtils.findLayoutResourceFile(this@getAndroidViewIds, project, "$layoutName.xml")
+//
+//                        if (include != null) {
+//                            elements.addAll(include.getAndroidViewIds())
+//                            return
+//                        }
+//                    }
+//                }
+//
+//                // get element ID
+//                val id = element.getAttribute("android:id", null)
+//                        ?: return  // missing android:id attribute
+//                val value = id.value
+//                        ?: return  // empty value
+//
+//                // check if there is defined custom class
+//                var name: String? = element.name
+//                val clazz = element.getAttribute("class", null)
+//                if (clazz != null) {
+//                    name = clazz.value
+//                }
+//
+//                try {
+//                    val e = Element(name!!, value)
+//                    elements.add(e)
+//                } catch (e: Exception) {
+//                    e.printStackTrace()
+//                }
+//
+//            }
+//        }
+//    })
 
     return elements
 }

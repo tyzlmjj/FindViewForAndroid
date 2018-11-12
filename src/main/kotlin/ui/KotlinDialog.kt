@@ -52,13 +52,16 @@ class KotlinDialog(
     init {
         title = "Generate findViewById code (Kotlin)"
 
-        layoutSize(700, 550)
-
         init()
+
+        val width = Math.max(700, contentPane!!.components.map { it.preferredSize.size.width }.max() ?: 0)
+        val height = 650
+        layoutSize(width, height)
 
         initEvent()
 
         bindData()
+
     }
 
     /**
@@ -168,7 +171,7 @@ class KotlinDialog(
                 else -> ""
             }
 
-            KtFileWriteHelper<Any>(project, psiFile,selectedInfo, mViewInfoList, addM, isPrivate,isLocalVariable, rootView)
+            KtFileWriteHelper<Any>(project, psiFile, selectedInfo, mViewInfoList, addM, isPrivate, isLocalVariable, rootView)
                     .execute()
             dispose()
         } catch (e: Exception) {

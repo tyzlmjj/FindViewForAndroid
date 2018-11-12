@@ -47,10 +47,11 @@ class JavaDialog(private val project: Project,
     init {
         title = "Generate findViewById code (JAVA)"
 
-        // 设置大小和位置
-        layoutSize(700, 520)
-
         init()
+
+        val width = Math.max(720, contentPane!!.components.map { it.preferredSize.size.width }.max() ?: 0)
+        val height = 600
+        layoutSize(width, height)
 
         initEvent()
 

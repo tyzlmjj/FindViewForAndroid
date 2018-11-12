@@ -51,10 +51,11 @@ class XMLDialog(private val file: PsiFile, list: List<Element>) : BaseJDialog() 
     init {
         title = "Generate findViewById code (XML)"
 
-        // 设置大小和位置
-        layoutSize(900, 550)
-
         init()
+
+        val width = Math.max(800, contentPane!!.components.map { it.preferredSize.size.width }.max() ?: 0)
+        val height = 600
+        layoutSize(width, height)
 
         initEvent()
 

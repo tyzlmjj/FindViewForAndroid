@@ -1,25 +1,29 @@
 <idea-plugin>
     <id>me.majiajie.ideaplugin.findviewforandroid</id>
     <name>FindViewForAndroid</name>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
     <vendor email="tyzl931019@gmail.com" url="https://github.com/tyzlmjj/FindViewForAndroid">MJJ</vendor>
 
-    <description>Generate Android 'findViewById' code.Support for Java and Kotlin.</description>
+    <description><![CDATA[
+    Generate Android 'findViewById' code.Support for Java and Kotlin.
+    ]]>
+    </description>
 
-    <change-notes>
-        <![CDATA[
-            <html>
-              <b>1.1.1</b>
-               <ul>
-                 <li>fix bug.</li>
-                 <li>add option 'local variable'.</li>
-               </ul>
-              <b>1.1</b>
-               <ul>
-                 <li>add the function of automatically generating code in the Java or Kotlin class.</li>
-               </ul>
-            </html>
-        ]]>
+    <change-notes><![CDATA[
+        <b>1.1.2</b>
+        <ul>
+            <li>modify dialog size</li>
+        </ul>
+        <b>1.1.1</b>
+        <ul>
+            <li>fix bug.</li>
+            <li>add option 'local variable'.</li>
+        </ul>
+        <b>1.1</b>
+        <ul>
+            <li>add the function of automatically generating code in the Java or Kotlin class.</li>
+        </ul>
+    ]]>
     </change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->

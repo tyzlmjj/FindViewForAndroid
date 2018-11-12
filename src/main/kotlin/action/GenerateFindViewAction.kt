@@ -82,12 +82,7 @@ class GenerateFindViewAction : AnAction() {
 
         val file = AndroidLayoutUtils.findLayoutResourceFile(psiFile, project, "${selectedInfo?.text}.xml")
 
-        return if (file == null) {
-            ArrayList()
-        } else {
-            // 解析布局文件中所有View的ID
-            file.getAndroidViewIds()
-        }
+        return file?.getAndroidViewIds() ?: ArrayList()
     }
 
     /**

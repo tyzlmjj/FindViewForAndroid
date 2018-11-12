@@ -54,12 +54,12 @@ fun List<ViewInfo>.gengrateKTCode(addM: Boolean, isPrivate: Boolean, isLocalVari
  */
 fun List<ViewInfo>.gengrateKTViewHolderCode(layoutName: String, viewHolderName: String, addM: Boolean, isPrivate: Boolean): String {
 
-    val fieldStr = this.filter { it.isChecked }.joinToString("\n") { it.getKTString(addM, isPrivate, "itemView") }
+    val fieldStr = this.filter { it.isChecked }.joinToString("\n    ") { it.getKTString(addM, isPrivate, "itemView") }
 
     return """
 internal class ${viewHolderName}ViewHolder private constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-$fieldStr
+    $fieldStr
 
     companion object {
 
@@ -94,8 +94,8 @@ fun List<ViewInfo>.gengrateJavaViewHolderCode(layoutName: String, viewHolderName
 
     val infos = this.filter { it.isChecked }
 
-    val fieldStr = infos.joinToString("\n") { it.getJavaFieldString(addM, isPrivate) }
-    val findViewStr = infos.joinToString("\n") { it.getJavaFindViewString(addM, isTarget26, "itemView") }
+    val fieldStr = infos.joinToString("\n    ") { it.getJavaFieldString(addM, isPrivate) }
+    val findViewStr = infos.joinToString("\n\t") { it.getJavaFindViewString(addM, isTarget26, "itemView") }
 
     return """
 static class ${viewHolderName}ViewHolder extends RecyclerView.ViewHolder {
