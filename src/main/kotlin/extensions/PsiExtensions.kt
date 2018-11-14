@@ -32,7 +32,7 @@ fun PsiFile.getAndroidViewIds(): ArrayList<Element> {
     val factory = SAXParserFactory.newInstance()
     val parser = factory.newSAXParser()
 
-    parser.parse(this.virtualFile.inputStream,object :DefaultHandler(){
+    parser.parse(this.text.byteInputStream(),object :DefaultHandler(){
         override fun startElement(uri: String?, localName: String?, qName: String?, attributes: Attributes?) {
             if ("include".equals(qName, ignoreCase = true)) {
                 val layout = attributes?.getValue("layout")
