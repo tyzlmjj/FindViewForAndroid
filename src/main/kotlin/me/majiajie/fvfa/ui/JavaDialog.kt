@@ -1,13 +1,17 @@
-package ui
+package me.majiajie.fvfa.ui
 
-import bean.*
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
 import com.intellij.psi.PsiFile
-import extensions.gengrateJavaCode
-import extensions.toClipboard
-import extensions.toViewInfoList
-import helper.JavaFileWriteHelper
+import me.majiajie.fvfa.extensions.generateJavaCode
+import me.majiajie.fvfa.extensions.toClipboard
+import me.majiajie.fvfa.extensions.toViewInfoList
+import me.majiajie.fvfa.helper.JavaFileWriteHelper
+import me.majiajie.fvfa.bean.Element
+import me.majiajie.fvfa.bean.SelectedInfo
+import me.majiajie.fvfa.ui.BaseJDialog
+import me.majiajie.fvfa.ui.ViewTableModel
+import me.majiajie.fvfa.ui.init
 import javax.swing.*
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
@@ -16,27 +20,27 @@ class JavaDialog(private val project: Project,
                  private val selectedInfo: SelectedInfo,
                  private val psiFile: PsiFile, list: List<Element>) : BaseJDialog() {
 
-    override var contentPane: JPanel? = null
-    override var buttonOK: JButton? = null
-    override var buttonCancel: JButton? = null
-    private var buttonCopyCode: JButton? = null
-    private var tvCode: JTextArea? = null
-    private var viewTable: JTable? = null
-    private var selectAllButton: JButton? = null
-    private var selectNoneButton: JButton? = null
-    private var selectInvert: JButton? = null
-    private var isPrivateCheckBox: JCheckBox? = null
-    private var addMCheckBox: JCheckBox? = null
+    override lateinit var contentPane: JPanel
+    override lateinit var buttonOK: JButton
+    override lateinit var buttonCancel: JButton
+    private lateinit var buttonCopyCode: JButton
+    private lateinit var tvCode: JTextArea
+    private lateinit var viewTable: JTable
+    private lateinit var selectAllButton: JButton
+    private lateinit var selectNoneButton: JButton
+    private lateinit var selectInvert: JButton
+    private lateinit var isPrivateCheckBox: JCheckBox
+    private lateinit var addMCheckBox: JCheckBox
 
-    private var addRootViewCheckBox: JCheckBox? = null
-    private var edtRootView: JTextField? = null
+    private lateinit var addRootViewCheckBox: JCheckBox
+    private lateinit var edtRootView: JTextField
 
-    private var isTarget26CheckBox: JCheckBox? = null
-    private var isLocalVariableCheckBox: JCheckBox? = null
+    private lateinit var isTarget26CheckBox: JCheckBox
+    private lateinit var isLocalVariableCheckBox: JCheckBox
 
     private var mViewInfoList = list.toViewInfoList()
 
-    private val mViewTableModel = ViewTableModel(mViewInfoList, addMCheckBox!!.isSelected,
+    private val mViewTableModel = ViewTableModel(mViewInfoList, addMCheckBox.isSelected,
             object : ViewTableModel.TableEditListener {
                 override fun onEdited() {
                     generateCode()
@@ -49,10 +53,6 @@ class JavaDialog(private val project: Project,
 
         init()
 
-        val width = Math.max(720, contentPane!!.components.map { it.preferredSize.size.width }.max() ?: 0)
-        val height = 600
-        layoutSize(width, height)
-
         initEvent()
 
         bindData()
@@ -64,7 +64,7 @@ class JavaDialog(private val project: Project,
     private fun initEvent() {
 
         // 全选
-        selectAllButton!!.addActionListener {
+        selectAllButton.addActionListener {
             for (viewInfo in mViewInfoList) {
                 viewInfo.isChecked = true
             }
@@ -73,16 +73,16 @@ class JavaDialog(private val project: Project,
         }
 
         // 全不选
-        selectNoneButton!!.addActionListener {
+        selectNoneButton.addActionListener {
             for (viewInfo in mViewInfoList) {
                 viewInfo.isChecked = false
             }
             mViewTableModel.fireTableDataChanged()
-            tvCode!!.text = ""
+            tvCode.text = ""
         }
 
         // 反选
-        selectInvert!!.addActionListener {
+        selectInvert.addActionListener {
             for (viewInfo in mViewInfoList) {
                 viewInfo.isChecked = !viewInfo.isChecked
             }
@@ -91,52 +91,52 @@ class JavaDialog(private val project: Project,
         }
 
         // 变量添加"m"
-        addMCheckBox!!.addActionListener {
+        addMCheckBox.addActionListener {
             generateCode()
-            mViewTableModel.setAddM(addMCheckBox!!.isSelected)
+            mViewTableModel.setAddM(addMCheckBox.isSelected)
             mViewTableModel.fireTableDataChanged()
         }
 
         // 是否私有
-        isPrivateCheckBox!!.addActionListener { generateCode() }
+        isPrivateCheckBox.addActionListener { generateCode() }
 
         // 是否为 API26 及以上
-        isTarget26CheckBox!!.addActionListener {
+        isTarget26CheckBox.addActionListener {
             generateCode()
         }
 
         // 是否为局部变量
-        isLocalVariableCheckBox!!.addActionListener {
+        isLocalVariableCheckBox.addActionListener {
             generateCode()
         }
 
         // 添加rootView
-        addRootViewCheckBox!!.addActionListener {
-            edtRootView!!.isEnabled = addRootViewCheckBox!!.isSelected
+        addRootViewCheckBox.addActionListener {
+            edtRootView.isEnabled = addRootViewCheckBox.isSelected
             generateCode()
         }
 
         // 输入rootView名称
-        edtRootView!!.document.addDocumentListener(object : DocumentListener {
+        edtRootView.document.addDocumentListener(object : DocumentListener {
             override fun changedUpdate(e: DocumentEvent?) {
             }
 
             override fun insertUpdate(e: DocumentEvent?) {
-                if (addRootViewCheckBox!!.isSelected) {
+                if (addRootViewCheckBox.isSelected) {
                     generateCode()
                 }
             }
 
             override fun removeUpdate(e: DocumentEvent?) {
-                if (addRootViewCheckBox!!.isSelected) {
+                if (addRootViewCheckBox.isSelected) {
                     generateCode()
                 }
             }
         })
 
         // 复制代码
-        buttonCopyCode!!.addActionListener {
-            tvCode!!.text.toClipboard()
+        buttonCopyCode.addActionListener {
+            tvCode.text.toClipboard()
             dispose()
         }
 
@@ -147,7 +147,7 @@ class JavaDialog(private val project: Project,
      */
     private fun bindData() {
         // 适配表格
-        viewTable!!.model = mViewTableModel
+        viewTable.model = mViewTableModel
         generateCode()
     }
 
@@ -156,11 +156,11 @@ class JavaDialog(private val project: Project,
      */
     override fun onOK() {
         try {
-            val addM = addMCheckBox!!.isSelected
-            val isPrivate = isPrivateCheckBox!!.isSelected
-            val rootView = if (addRootViewCheckBox!!.isSelected) edtRootView!!.text else ""
-            val isTarget26 = isTarget26CheckBox!!.isSelected
-            val isLocalVariable = isLocalVariableCheckBox!!.isSelected
+            val addM = addMCheckBox.isSelected
+            val isPrivate = isPrivateCheckBox.isSelected
+            val rootView = if (addRootViewCheckBox.isSelected) edtRootView.text else ""
+            val isTarget26 = isTarget26CheckBox.isSelected
+            val isLocalVariable = isLocalVariableCheckBox.isSelected
             JavaFileWriteHelper<Any>(project, psiFile, selectedInfo, mViewInfoList, addM, isPrivate, rootView, isTarget26, isLocalVariable)
                     .execute()
             dispose()
@@ -180,15 +180,15 @@ class JavaDialog(private val project: Project,
      * 生成代码
      */
     private fun generateCode() {
-        val addM = addMCheckBox!!.isSelected
-        val isPrivate = isPrivateCheckBox!!.isSelected
-        val rootView = if (addRootViewCheckBox!!.isSelected) edtRootView!!.text else ""
-        val isTarget26 = isTarget26CheckBox!!.isSelected
-        val isLocalVariable = isLocalVariableCheckBox!!.isSelected
-        tvCode!!.text = mViewInfoList.gengrateJavaCode(addM, rootView, isPrivate, isTarget26, isLocalVariable)
+        val addM = addMCheckBox.isSelected
+        val isPrivate = isPrivateCheckBox.isSelected
+        val rootView = if (addRootViewCheckBox.isSelected) edtRootView.text else ""
+        val isTarget26 = isTarget26CheckBox.isSelected
+        val isLocalVariable = isLocalVariableCheckBox.isSelected
+        tvCode.text = mViewInfoList.generateJavaCode(addM, rootView, isPrivate, isTarget26, isLocalVariable)
 
         // 将光标移动到开始位置（用于控制垂直滚动在代码生成后一直在顶部）
-        tvCode!!.caretPosition = 0
+        tvCode.caretPosition = 0
     }
 
 }

@@ -1,6 +1,6 @@
-package utils
+package me.majiajie.fvfa.utils
 
-import extensions.findFiles
+import me.majiajie.fvfa.extensions.findFiles
 import com.intellij.openapi.module.ModuleUtil
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement

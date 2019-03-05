@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/FindViewForAndroid.iml" filepath="$PROJECT_DIR$/FindViewForAndroid.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FindViewForAndroid_main.iml" filepath="$PROJECT_DIR$/.idea/modules/FindViewForAndroid_main.iml" group="FindViewForAndroid" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FindViewForAndroid_test.iml" filepath="$PROJECT_DIR$/.idea/modules/FindViewForAndroid_test.iml" group="FindViewForAndroid" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/me.majiajie.FindViewForAndroid.iml" filepath="$PROJECT_DIR$/.idea/modules/me.majiajie.FindViewForAndroid.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/me.majiajie.FindViewForAndroid.main.iml" filepath="$PROJECT_DIR$/.idea/modules/me.majiajie.FindViewForAndroid.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/me.majiajie.FindViewForAndroid.test.iml" filepath="$PROJECT_DIR$/.idea/modules/me.majiajie.FindViewForAndroid.test.iml" />
     </modules>
   </component>
 </project>

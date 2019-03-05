@@ -1,7 +1,7 @@
-package action
+package me.majiajie.fvfa.action
 
-import bean.Element
-import bean.SelectedInfo
+import me.majiajie.fvfa.bean.Element
+import me.majiajie.fvfa.bean.SelectedInfo
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.LangDataKeys
@@ -9,11 +9,11 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
 import com.intellij.psi.PsiFile
-import extensions.getAndroidViewIds
-import ui.JavaDialog
-import ui.KotlinDialog
-import ui.XMLDialog
-import utils.AndroidLayoutUtils
+import me.majiajie.fvfa.extensions.getAndroidViewIds
+import me.majiajie.fvfa.ui.JavaDialog
+import me.majiajie.fvfa.ui.KotlinDialog
+import me.majiajie.fvfa.ui.XMLDialog
+import me.majiajie.fvfa.utils.AndroidLayoutUtils
 
 import java.util.ArrayList
 
@@ -26,6 +26,7 @@ class GenerateFindViewAction : AnAction() {
     private var selectedInfo: SelectedInfo? = null
 
     override fun actionPerformed(e: AnActionEvent) {
+
         // 获取project
         val project = e.getData(PlatformDataKeys.PROJECT) ?: return
 
@@ -91,6 +92,7 @@ class GenerateFindViewAction : AnAction() {
     private fun showGenerateKotlinCodeDialog(project: Project, selectedInfo: SelectedInfo, psiFile: PsiFile, elements: ArrayList<Element>) {
         val dialog = KotlinDialog(project, psiFile, selectedInfo, elements)
         dialog.pack()
+        dialog.setLocationRelativeTo(null)
         dialog.isVisible = true
     }
 
@@ -100,6 +102,7 @@ class GenerateFindViewAction : AnAction() {
     private fun showGenerateXMLDialog(psiFile: PsiFile, elements: ArrayList<Element>) {
         val dialog = XMLDialog(psiFile, elements)
         dialog.pack()
+        dialog.setLocationRelativeTo(null)
         dialog.isVisible = true
     }
 
@@ -109,6 +112,7 @@ class GenerateFindViewAction : AnAction() {
     private fun showGenerateJavaCodeDialog(project: Project, selectedInfo: SelectedInfo, psiFile: PsiFile, elements: ArrayList<Element>) {
         val dialog = JavaDialog(project, selectedInfo, psiFile, elements)
         dialog.pack()
+        dialog.setLocationRelativeTo(null)
         dialog.isVisible = true
     }
 }

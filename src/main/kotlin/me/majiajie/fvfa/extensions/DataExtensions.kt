@@ -1,16 +1,9 @@
-package extensions
+package me.majiajie.fvfa.extensions
 
-import bean.Element
-import bean.ViewInfo
-import com.intellij.openapi.project.Project
-import com.intellij.psi.JavaPsiFacade
-import com.intellij.psi.PsiField
-import com.intellij.psi.PsiFile
-import org.jetbrains.kotlin.psi.KtProperty
-import org.jetbrains.kotlin.psi.KtPsiFactory
+import me.majiajie.fvfa.bean.Element
+import me.majiajie.fvfa.bean.ViewInfo
 import java.awt.Toolkit
 import java.awt.datatransfer.StringSelection
-import java.util.*
 
 /**
  * 复制字符串到剪贴板
@@ -40,7 +33,7 @@ fun List<Element>.toViewInfoList() = this.map { ViewInfo(true, it) }
 /**
  * 生成Kotlin代码
  */
-fun List<ViewInfo>.gengrateKTCode(addM: Boolean, isPrivate: Boolean, isLocalVariable: Boolean, rootView: String): String {
+fun List<ViewInfo>.generateKTCode(addM: Boolean, isPrivate: Boolean, isLocalVariable: Boolean, rootView: String): String {
     return this.filter { it.isChecked }.joinToString("\n") {
         if (isLocalVariable)
             it.getKTLocalVariableString(addM, rootView)
@@ -52,7 +45,7 @@ fun List<ViewInfo>.gengrateKTCode(addM: Boolean, isPrivate: Boolean, isLocalVari
 /**
  * 生成Kotlin ViewHolder代码
  */
-fun List<ViewInfo>.gengrateKTViewHolderCode(layoutName: String, viewHolderName: String, addM: Boolean, isPrivate: Boolean): String {
+fun List<ViewInfo>.generateKTViewHolderCode(layoutName: String, viewHolderName: String, addM: Boolean, isPrivate: Boolean): String {
 
     val fieldStr = this.filter { it.isChecked }.joinToString("\n    ") { it.getKTString(addM, isPrivate, "itemView") }
 
@@ -74,9 +67,38 @@ internal class ${viewHolderName}ViewHolder private constructor(itemView: View) :
 }
 
 /**
+ * 生成Kotlin Epoxy model代码
+ */
+fun List<ViewInfo>.generateKTEpoxyModelCode(layoutName: String, modelName: String, addM: Boolean): String {
+
+    val fieldStr = this.filter { it.isChecked }.joinToString("\n\t") { it.getKTString(addM, false, "itemView") }
+
+    return """
+@EpoxyModelClass(layout = R.layout.$layoutName)
+abstract class ${modelName}Model : EpoxyModelWithHolder<${modelName}Model.${modelName}ViewHolder>() {
+
+    override fun bind(holder: ${modelName}ViewHolder) {
+
+    }
+
+    class ${modelName}ViewHolder : EpoxyHolder() {
+
+        lateinit var itemView: View
+        $fieldStr
+
+        override fun bindView(itemView: View) {
+            this.itemView = itemView
+        }
+    }
+
+}
+    """.trimIndent()
+}
+
+/**
  * 生成Java代码
  */
-fun List<ViewInfo>.gengrateJavaCode(addM: Boolean, rootView: String, isPrivate: Boolean, isTarget26: Boolean, isLocalVariable: Boolean = false): String {
+fun List<ViewInfo>.generateJavaCode(addM: Boolean, rootView: String, isPrivate: Boolean, isTarget26: Boolean, isLocalVariable: Boolean = false): String {
     val infos = this.filter { it.isChecked }
     return if (isLocalVariable) {
         infos.joinToString("\n") { it.getJavaLocalVariableString(addM, isTarget26, rootView) }
@@ -88,9 +110,9 @@ fun List<ViewInfo>.gengrateJavaCode(addM: Boolean, rootView: String, isPrivate: 
 }
 
 /**
- * 生成Java viewHolder代码
+ * 生成Java ViewHolder代码
  */
-fun List<ViewInfo>.gengrateJavaViewHolderCode(layoutName: String, viewHolderName: String, addM: Boolean, isPrivate: Boolean, isTarget26: Boolean): String {
+fun List<ViewInfo>.generateJavaViewHolderCode(layoutName: String, viewHolderName: String, addM: Boolean, isPrivate: Boolean, isTarget26: Boolean): String {
 
     val infos = this.filter { it.isChecked }
 
@@ -110,6 +132,39 @@ static class ${viewHolderName}ViewHolder extends RecyclerView.ViewHolder {
     private ${viewHolderName}ViewHolder(View itemView) {
         super(itemView);
         $findViewStr
+    }
+
+}
+    """.trimIndent()
+}
+
+/**
+ * 生成Java Epoxy model代码
+ */
+fun List<ViewInfo>.generateJavaEpoxyModelCode(layoutName: String, modelName: String, addM: Boolean, isPrivate: Boolean, isTarget26: Boolean): String {
+
+    val infos = this.filter { it.isChecked }
+
+    val fieldStr = infos.joinToString("\n\t") { it.getJavaFieldString(addM, isPrivate) }
+    val findViewStr = infos.joinToString("\n\t    ") { it.getJavaFindViewString(addM, isTarget26, "itemView") }
+
+    return """
+@EpoxyModelClass(layout = R.layout.$layoutName)
+public abstract class ${modelName}Model extends EpoxyModelWithHolder<${modelName}Model.${modelName}ViewHolder> {
+
+    @Override
+    public void bind(@NonNull ${modelName}ViewHolder holder) {
+
+    }
+
+    static class ${modelName}ViewHolder extends EpoxyHolder {
+
+        $fieldStr
+
+        @Override
+        protected void bindView(@NonNull View itemView) {
+            $findViewStr
+        }
     }
 
 }

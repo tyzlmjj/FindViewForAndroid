@@ -1,13 +1,17 @@
-package ui
+package me.majiajie.fvfa.ui
 
-import bean.*
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
 import com.intellij.psi.PsiFile
-import extensions.gengrateKTCode
-import extensions.toClipboard
-import extensions.toViewInfoList
-import helper.KtFileWriteHelper
+import me.majiajie.fvfa.extensions.generateKTCode
+import me.majiajie.fvfa.extensions.toClipboard
+import me.majiajie.fvfa.extensions.toViewInfoList
+import me.majiajie.fvfa.helper.KtFileWriteHelper
+import me.majiajie.fvfa.bean.Element
+import me.majiajie.fvfa.bean.SelectedInfo
+import me.majiajie.fvfa.ui.BaseJDialog
+import me.majiajie.fvfa.ui.ViewTableModel
+import me.majiajie.fvfa.ui.init
 
 import javax.swing.*
 import javax.swing.event.DocumentEvent
@@ -23,25 +27,25 @@ class KotlinDialog(
         list: List<Element>)
     : BaseJDialog() {
 
-    override var contentPane: JPanel? = null
-    override var buttonOK: JButton? = null
-    override var buttonCancel: JButton? = null
-    private var buttonCopyCode: JButton? = null
-    private var tvCode: JTextArea? = null
-    private var viewTable: JTable? = null
-    private var selectAllButton: JButton? = null
-    private var selectNoneButton: JButton? = null
-    private var selectInvert: JButton? = null
-    private var isActivityRadioButton: JRadioButton? = null
-    private var isFragmentRadioButton: JRadioButton? = null
-    private var isLocalVariableRadioButton: JRadioButton? = null
-    private var edtRootView: JTextField? = null
-    private var isPrivateCheckBox: JCheckBox? = null
-    private var addMCheckBox: JCheckBox? = null
+    override lateinit var contentPane: JPanel
+    override lateinit var buttonOK: JButton
+    override lateinit var buttonCancel: JButton
+    private lateinit var buttonCopyCode: JButton
+    private lateinit var tvCode: JTextArea
+    private lateinit var viewTable: JTable
+    private lateinit var selectAllButton: JButton
+    private lateinit var selectNoneButton: JButton
+    private lateinit var selectInvert: JButton
+    private lateinit var isActivityRadioButton: JRadioButton
+    private lateinit var isFragmentRadioButton: JRadioButton
+    private lateinit var isLocalVariableRadioButton: JRadioButton
+    private lateinit var edtRootView: JTextField
+    private lateinit var isPrivateCheckBox: JCheckBox
+    private lateinit var addMCheckBox: JCheckBox
 
     private var mViewInfoList = list.toViewInfoList()
 
-    private val mViewTableModel = ViewTableModel(mViewInfoList, addMCheckBox!!.isSelected,
+    private val mViewTableModel = ViewTableModel(mViewInfoList, addMCheckBox.isSelected,
             object : ViewTableModel.TableEditListener {
                 override fun onEdited() {
                     generateCode()
@@ -54,14 +58,9 @@ class KotlinDialog(
 
         init()
 
-        val width = Math.max(700, contentPane!!.components.map { it.preferredSize.size.width }.max() ?: 0)
-        val height = 650
-        layoutSize(width, height)
-
         initEvent()
 
         bindData()
-
     }
 
     /**
@@ -69,7 +68,7 @@ class KotlinDialog(
      */
     private fun initEvent() {
         // 全选
-        selectAllButton!!.addActionListener {
+        selectAllButton.addActionListener {
             for (viewInfo in mViewInfoList) {
                 viewInfo.isChecked = true
             }
@@ -78,16 +77,16 @@ class KotlinDialog(
         }
 
         // 全不选
-        selectNoneButton!!.addActionListener {
+        selectNoneButton.addActionListener {
             for (viewInfo in mViewInfoList) {
                 viewInfo.isChecked = false
             }
             mViewTableModel.fireTableDataChanged()
-            tvCode!!.text = ""
+            tvCode.text = ""
         }
 
         // 反选
-        selectInvert!!.addActionListener {
+        selectInvert.addActionListener {
             for (viewInfo in mViewInfoList) {
                 viewInfo.isChecked = !viewInfo.isChecked
             }
@@ -96,45 +95,45 @@ class KotlinDialog(
         }
 
         // 变量添加"m"
-        addMCheckBox!!.addActionListener {
+        addMCheckBox.addActionListener {
             generateCode()
-            mViewTableModel.setAddM(addMCheckBox!!.isSelected)
+            mViewTableModel.setAddM(addMCheckBox.isSelected)
             mViewTableModel.fireTableDataChanged()
         }
 
         // 是否私有
-        isPrivateCheckBox!!.addActionListener { generateCode() }
+        isPrivateCheckBox.addActionListener { generateCode() }
 
         // Fragment
-        isFragmentRadioButton!!.addActionListener { generateCode() }
+        isFragmentRadioButton.addActionListener { generateCode() }
 
         // Activity
-        isActivityRadioButton!!.addActionListener { generateCode() }
+        isActivityRadioButton.addActionListener { generateCode() }
 
         // Local Variable
-        isLocalVariableRadioButton!!.addActionListener {
+        isLocalVariableRadioButton.addActionListener {
             generateCode()
-            edtRootView!!.isEnabled = isLocalVariableRadioButton!!.isSelected
+            edtRootView.isEnabled = isLocalVariableRadioButton.isSelected
         }
 
         // Copy Code
-        buttonCopyCode!!.addActionListener {
-            tvCode!!.text.toClipboard()
+        buttonCopyCode.addActionListener {
+            tvCode.text.toClipboard()
             dispose()
         }
 
         // 输入RootView名称
-        edtRootView!!.document.addDocumentListener(object : DocumentListener {
+        edtRootView.document.addDocumentListener(object : DocumentListener {
             override fun changedUpdate(e: DocumentEvent?) {}
 
             override fun insertUpdate(e: DocumentEvent?) {
-                if (isLocalVariableRadioButton!!.isSelected) {
+                if (isLocalVariableRadioButton.isSelected) {
                     generateCode()
                 }
             }
 
             override fun removeUpdate(e: DocumentEvent?) {
-                if (isLocalVariableRadioButton!!.isSelected) {
+                if (isLocalVariableRadioButton.isSelected) {
                     generateCode()
                 }
             }
@@ -152,7 +151,7 @@ class KotlinDialog(
         group.add(isLocalVariableRadioButton)
 
         // 适配表格
-        viewTable!!.model = mViewTableModel
+        viewTable.model = mViewTableModel
 
         generateCode()
     }
@@ -162,12 +161,12 @@ class KotlinDialog(
      */
     override fun onOK() {
         try {
-            val addM = addMCheckBox!!.isSelected
-            val isPrivate = isPrivateCheckBox!!.isSelected
-            val isLocalVariable = isLocalVariableRadioButton!!.isSelected
+            val addM = addMCheckBox.isSelected
+            val isPrivate = isPrivateCheckBox.isSelected
+            val isLocalVariable = isLocalVariableRadioButton.isSelected
             val rootView = when {
-                isLocalVariable -> edtRootView!!.text
-                isFragmentRadioButton!!.isSelected -> "view!!"
+                isLocalVariable -> edtRootView.text
+                isFragmentRadioButton.isSelected -> "view!!"
                 else -> ""
             }
 
@@ -190,19 +189,19 @@ class KotlinDialog(
      * 生成代码
      */
     private fun generateCode() {
-        val addM = addMCheckBox!!.isSelected
-        val isPrivate = isPrivateCheckBox!!.isSelected
-        val isLocalVariable = isLocalVariableRadioButton!!.isSelected
+        val addM = addMCheckBox.isSelected
+        val isPrivate = isPrivateCheckBox.isSelected
+        val isLocalVariable = isLocalVariableRadioButton.isSelected
         val rootView = when {
-            isLocalVariable -> edtRootView!!.text
-            isFragmentRadioButton!!.isSelected -> "view!!"
+            isLocalVariable -> edtRootView.text
+            isFragmentRadioButton.isSelected -> "view!!"
             else -> ""
         }
 
-        tvCode!!.text = mViewInfoList.gengrateKTCode(addM, isPrivate, isLocalVariable, rootView)
+        tvCode.text = mViewInfoList.generateKTCode(addM, isPrivate, isLocalVariable, rootView)
 
         // 将光标移动到开始位置（用于控制垂直滚动在代码生成后一直在顶部）
-        tvCode!!.caretPosition = 0
+        tvCode.caretPosition = 0
     }
 
 }

@@ -1,6 +1,6 @@
-package bean
+package me.majiajie.fvfa.bean
 
-import extensions.firstToUpperCase
+import me.majiajie.fvfa.extensions.firstToUpperCase
 import java.util.regex.Pattern
 
 class Element(viewClassName: String, viewId: String) {

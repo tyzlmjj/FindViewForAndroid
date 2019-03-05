@@ -1,4 +1,4 @@
-package ui
+package me.majiajie.fvfa.ui
 
 import java.awt.Dimension
 import java.awt.event.KeyEvent
@@ -11,9 +11,9 @@ import javax.swing.*
  */
 abstract class BaseJDialog : JDialog(){
 
-    abstract var contentPane: JPanel?
-    abstract var buttonOK: JButton?
-    abstract var buttonCancel: JButton?
+    abstract var contentPane: JPanel
+    abstract var buttonOK: JButton
+    abstract var buttonCancel: JButton
 
     abstract fun onOK()
 
@@ -30,10 +30,10 @@ fun BaseJDialog.init(){
     this.rootPane.defaultButton = buttonOK
 
     // 确认按钮
-    buttonOK?.addActionListener { onOK() }
+    buttonOK.addActionListener { onOK() }
 
     // 取消按钮
-    buttonCancel?.addActionListener { onCancel() }
+    buttonCancel.addActionListener { onCancel() }
 
     // 窗体关闭事件
     defaultCloseOperation = WindowConstants.DO_NOTHING_ON_CLOSE
@@ -44,7 +44,7 @@ fun BaseJDialog.init(){
     })
 
     // 键盘ESC事件
-    contentPane?.registerKeyboardAction({ onCancel() }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+    contentPane.registerKeyboardAction({ onCancel() }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 }
 
 /**

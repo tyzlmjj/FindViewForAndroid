@@ -2,8 +2,8 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
-      <module name="FindViewForAndroid_main" target="1.8" />
-      <module name="FindViewForAndroid_test" target="1.8" />
+      <module name="me.majiajie.FindViewForAndroid.main" target="1.8" />
+      <module name="me.majiajie.FindViewForAndroid.test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

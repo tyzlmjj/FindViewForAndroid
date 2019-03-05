@@ -1,15 +1,17 @@
-package helper
+package me.majiajie.fvfa.helper
 
-import bean.SelectedInfo
-import bean.ViewInfo
-import com.android.internal.R.id.list
+import me.majiajie.fvfa.bean.SelectedInfo
+import me.majiajie.fvfa.bean.ViewInfo
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import extensions.getFunction
-import extensions.getKotlinClass
-import org.jetbrains.kotlin.psi.*
+import me.majiajie.fvfa.extensions.getFunction
+import me.majiajie.fvfa.extensions.getKotlinClass
+import org.jetbrains.kotlin.psi.KtBlockExpression
+import org.jetbrains.kotlin.psi.KtClassBody
+import org.jetbrains.kotlin.psi.KtProperty
+import org.jetbrains.kotlin.psi.KtPsiFactory
 
 /**
  * Kt类文件写入帮助

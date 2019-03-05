@@ -1,6 +1,6 @@
-package extensions
+package me.majiajie.fvfa.extensions
 
-import bean.Element
+import me.majiajie.fvfa.bean.Element
 import com.intellij.openapi.project.Project
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.PsiClassImpl
@@ -11,7 +11,7 @@ import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtFunction
 import org.xml.sax.Attributes
 import org.xml.sax.helpers.DefaultHandler
-import utils.AndroidLayoutUtils
+import me.majiajie.fvfa.utils.AndroidLayoutUtils
 import java.util.ArrayList
 import javax.xml.parsers.SAXParserFactory
 

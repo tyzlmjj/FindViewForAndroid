@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="ui.XMLDialog">
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="me.majiajie.fvfa.ui.XMLDialog">
   <grid id="cbd77" binding="contentPane" layout-manager="GridLayoutManager" row-count="7" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="10" left="10" bottom="10" right="10"/>
     <constraints>
-      <xy x="48" y="54" width="855" height="571"/>
+      <xy x="48" y="54" width="1123" height="571"/>
     </constraints>
-    <properties/>
+    <properties>
+      <minimumSize width="1123" height="568"/>
+    </properties>
     <border type="none"/>
     <children>
       <grid id="94766" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
@@ -130,7 +132,7 @@
           </hspacer>
         </children>
       </grid>
-      <grid id="aaf50" binding="kotlinPanel" layout-manager="GridLayoutManager" row-count="1" column-count="9" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="aaf50" binding="kotlinPanel" layout-manager="GridLayoutManager" row-count="1" column-count="11" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="0" left="0" bottom="0" right="0"/>
         <constraints>
           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -140,7 +142,7 @@
         <children>
           <hspacer id="3c0ba">
             <constraints>
-              <grid row="0" column="6" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="8" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
           </hspacer>
           <component id="83da3" class="javax.swing.JRadioButton" binding="isActivityRadioButton" default-binding="true">
@@ -169,7 +171,7 @@
               <text value="ReclerViewHolder"/>
             </properties>
           </component>
-          <component id="f1314" class="javax.swing.JTextField" binding="tvKTViewHolderName">
+          <component id="f1314" class="javax.swing.JTextField" binding="edtKTViewHolderName">
             <constraints>
               <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="100" height="-1"/>
@@ -191,6 +193,24 @@
             <constraints>
               <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="100" height="-1"/>
+              </grid>
+            </constraints>
+            <properties>
+              <enabled value="false"/>
+            </properties>
+          </component>
+          <component id="54ba9" class="javax.swing.JRadioButton" binding="isEpoxyRadioButton">
+            <constraints>
+              <grid row="0" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="EpoxyModel"/>
+            </properties>
+          </component>
+          <component id="baf27" class="javax.swing.JTextField" binding="edtKTEpoxyModelName">
+            <constraints>
+              <grid row="0" column="7" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
               </grid>
             </constraints>
             <properties>
@@ -249,14 +269,14 @@
           </component>
         </children>
       </grid>
-      <grid id="10543" binding="javaPanel" layout-manager="GridLayoutManager" row-count="1" column-count="7" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="10543" binding="javaPanel" layout-manager="GridLayoutManager" row-count="1" column-count="9" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="0" left="0" bottom="0" right="0"/>
         <constraints>
           <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <enabled value="true"/>
-          <visible value="false"/>
+          <visible value="true"/>
         </properties>
         <border type="none"/>
         <children>
@@ -278,7 +298,7 @@
               <enabled value="false"/>
             </properties>
           </component>
-          <component id="77053" class="javax.swing.JCheckBox" binding="isReclerViewHolderCheckBox" default-binding="true">
+          <component id="77053" class="javax.swing.JCheckBox" binding="isReclerViewHolderCheckBox">
             <constraints>
               <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -286,7 +306,7 @@
               <text value="ReclerViewHolder"/>
             </properties>
           </component>
-          <component id="62efb" class="javax.swing.JTextField" binding="tvJavaViewHolderName">
+          <component id="62efb" class="javax.swing.JTextField" binding="edtJavaViewHolderName">
             <constraints>
               <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="100" height="-1"/>
@@ -307,7 +327,7 @@
           </component>
           <hspacer id="8217f">
             <constraints>
-              <grid row="0" column="6" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="8" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
           </hspacer>
           <component id="74f77" class="javax.swing.JCheckBox" binding="isLocalVariableCheckBox">
@@ -316,6 +336,24 @@
             </constraints>
             <properties>
               <text value="local variable"/>
+            </properties>
+          </component>
+          <component id="5451f" class="javax.swing.JCheckBox" binding="isEpoxyModelCheckBox">
+            <constraints>
+              <grid row="0" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="EpoxyModel"/>
+            </properties>
+          </component>
+          <component id="41e14" class="javax.swing.JTextField" binding="edtJavaEpoxyModelName">
+            <constraints>
+              <grid row="0" column="7" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+            </constraints>
+            <properties>
+              <enabled value="false"/>
             </properties>
           </component>
         </children>

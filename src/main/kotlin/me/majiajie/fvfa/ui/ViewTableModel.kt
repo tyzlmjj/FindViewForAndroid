@@ -1,6 +1,6 @@
-package ui
+package me.majiajie.fvfa.ui
 
-import bean.ViewInfo
+import me.majiajie.fvfa.bean.ViewInfo
 
 import javax.swing.table.AbstractTableModel
 

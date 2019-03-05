@@ -1,4 +1,4 @@
-package bean
+package me.majiajie.fvfa.bean
 
 
 class ViewInfo(var isChecked: Boolean, var element: Element) {

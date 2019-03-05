@@ -1,11 +1,11 @@
-package helper
+package me.majiajie.fvfa.helper
 
-import bean.SelectedInfo
-import bean.ViewInfo
+import me.majiajie.fvfa.bean.SelectedInfo
+import me.majiajie.fvfa.bean.ViewInfo
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.project.Project
 import com.intellij.psi.*
-import extensions.*
+import me.majiajie.fvfa.extensions.*
 import org.apache.http.util.TextUtils
 
 /**
