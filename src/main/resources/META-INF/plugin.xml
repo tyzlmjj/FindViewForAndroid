@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>me.majiajie.ideaplugin.findviewforandroid</id>
     <name>FindViewForAndroid</name>
-    <version>1.2.0</version>
+    <version>1.2.1</version>
     <vendor email="tyzl931019@gmail.com" url="https://github.com/tyzlmjj/FindViewForAndroid">MJJ</vendor>
 
     <description><![CDATA[
@@ -10,6 +10,10 @@
     </description>
 
     <change-notes><![CDATA[
+        <b>1.2.1</b>
+        <ul>
+            <li>fix AndroidX support</li>
+        </ul>
         <b>1.2.0</b>
         <ul>
             <li>add <a href="https://github.com/airbnb/epoxy">Epoxy</a> support</li>
