@@ -32,7 +32,7 @@ fun PsiFile.getAndroidViewIds(): ArrayList<Element> {
     val factory = SAXParserFactory.newInstance()
     val parser = factory.newSAXParser()
 
-    parser.parse(this.text.byteInputStream(),object :DefaultHandler(){
+    parser.parse(this.text.byteInputStream(), object : DefaultHandler() {
         override fun startElement(uri: String?, localName: String?, qName: String?, attributes: Attributes?) {
             if ("include".equals(qName, ignoreCase = true)) {
                 val layout = attributes?.getValue("layout")
@@ -130,14 +130,14 @@ fun PsiClass.isExtendsActivity(): Boolean {
  * 判断类是否继承Fragment
  */
 fun PsiClass.isExtendsFragment(): Boolean {
-    return this.isExtendsClass("Fragment", kotlin.arrayOf("android.support.v4.app", "android.app"))
+    return this.isExtendsClass("Fragment", kotlin.arrayOf("androidx.fragment.app", "android.support.v4.app", "android.app"))
 }
 
 /**
  * 判断类是否继承DialogFragment
  */
 fun PsiClass.isExtendsDialogFragment(): Boolean {
-    return this.isExtendsClass("DialogFragment", kotlin.arrayOf("android.support.v4.app", "android.app"))
+    return this.isExtendsClass("DialogFragment", kotlin.arrayOf("androidx.fragment.app", "android.support.v4.app", "android.app"))
 }
 
 /**
