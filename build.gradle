@@ -1,0 +1,37 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm' version "1.4.10"
+    id 'org.jetbrains.intellij' version "0.5.0"
+}
+
+group = "me.majiajie"
+version = "1.2.1"
+
+sourceCompatibility = 1.8
+
+sourceSets {
+    main.kotlin.srcDirs += 'src/main/kotlin'
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+}
+
+intellij {
+    pluginName = "FindViewForAndroid"
+    updateSinceUntilBuild = false
+    setPlugins("java","Kotlin","android")
+    alternativeIdePath = "/Applications/Android Studio.app"
+}
+
+patchPluginXml {
+    version = project.version
+    sinceBuild = '173'
+    untilBuild = '202.*'
+}
+

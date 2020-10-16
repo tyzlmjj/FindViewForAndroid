@@ -1,7 +1,6 @@
 <idea-plugin>
     <id>me.majiajie.ideaplugin.findviewforandroid</id>
     <name>FindViewForAndroid</name>
-    <version>1.2.1</version>
     <vendor email="tyzl931019@gmail.com" url="https://github.com/tyzlmjj/FindViewForAndroid">MJJ</vendor>
 
     <description><![CDATA[
@@ -39,7 +38,6 @@
     </change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-    <idea-version since-build="173.0"/>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
@@ -50,7 +48,9 @@
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
     </extensions>
-    <!--org.jetbrains.kotlin-->
+    <depends>com.intellij.modules.platform</depends>
+    <depends>org.jetbrains.kotlin</depends>
+    <depends>com.intellij.modules.java</depends>
     <depends>org.jetbrains.android</depends>
 
     <actions>
