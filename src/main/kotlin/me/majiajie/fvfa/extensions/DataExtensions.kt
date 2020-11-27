@@ -15,6 +15,35 @@ fun String.toClipboard() {
 }
 
 /**
+ * id转换变量名
+ * @param addM 是否添加前缀 'm'
+ */
+fun String.id2FieldName(addM: Boolean): String {
+    val names = this.split("_".toRegex()).dropLastWhile { it.isEmpty }.toTypedArray()
+    val sb = StringBuilder()
+    if (addM) {
+        // mAaBbCc
+        for (i in names.indices) {
+            if (i == 0) {
+                sb.append("m")
+            }
+            sb.append(names[i].firstToUpperCase())
+        }
+    } else {
+        // aaBbCc
+        for (i in names.indices) {
+            if (i == 0) {
+                sb.append(names[i])
+            } else {
+                sb.append(names[i].firstToUpperCase())
+            }
+        }
+
+    }
+    return sb.toString()
+}
+
+/**
  * 首字母大写
  */
 fun String.firstToUpperCase(): String {
@@ -47,12 +76,17 @@ fun List<ViewInfo>.generateKTCode(addM: Boolean, isPrivate: Boolean, isLocalVari
  */
 fun List<ViewInfo>.generateKTViewHolderCode(layoutName: String, viewHolderName: String, addM: Boolean, isPrivate: Boolean): String {
 
-    val fieldStr = this.filter { it.isChecked }.joinToString("\n    ") { it.getKTString(addM, isPrivate, "itemView") }
+    val fieldStr = this.filter { it.isChecked }.joinToString("\n\t") { it.getKTValFieldString(addM, isPrivate) }
+    val findViewStr = this.filter { it.isChecked }.joinToString("\n\t") { it.getKTFindViewString(addM, "itemView") }
 
     return """
-internal class ${viewHolderName}ViewHolder private constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class ${viewHolderName}ViewHolder private constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     $fieldStr
+    
+    init{
+        $findViewStr
+    }
 
     companion object {
 
@@ -62,8 +96,28 @@ internal class ${viewHolderName}ViewHolder private constructor(itemView: View) :
         }
     }
 
+}""".trimIndent()
 }
-    """.trimIndent()
+
+/**
+ * 从布局名生成Kotlin ViewHolder代码(ViewBinding)
+ */
+fun String.generateKTViewHolderViewBindingCode(viewHolderName: String): String {
+
+    val bindingClassName = this.id2FieldName(false).firstToUpperCase() + "Binding"
+
+    return """
+class ${viewHolderName}ViewHolder private constructor(val binding: $bindingClassName) : RecyclerView.ViewHolder(binding.root) {
+
+    companion object {
+
+        fun newInstance(parent: ViewGroup): ${viewHolderName}ViewHolder {
+            val binding = LayoutItemTextBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            return ${viewHolderName}ViewHolder(binding)
+        }
+    }
+
+}""".trimIndent()
 }
 
 /**
@@ -71,14 +125,19 @@ internal class ${viewHolderName}ViewHolder private constructor(itemView: View) :
  */
 fun List<ViewInfo>.generateKTEpoxyModelCode(layoutName: String, modelName: String, addM: Boolean): String {
 
-    val fieldStr = this.filter { it.isChecked }.joinToString("\n\t") { it.getKTString(addM, false, "itemView") }
+    val fieldStr = this.filter { it.isChecked }.joinToString("\n\t") { it.getKTLateinitFieldString(addM, false) }
+    val findViewStr = this.filter { it.isChecked }.joinToString("\n\t") { it.getKTFindViewString(addM, "itemView") }
 
     return """
-@EpoxyModelClass(layout = R.layout.$layoutName)
+@EpoxyModelClass
 abstract class ${modelName}Model : EpoxyModelWithHolder<${modelName}Model.${modelName}ViewHolder>() {
 
     override fun bind(holder: ${modelName}ViewHolder) {
-
+    
+    }
+    
+    override fun getDefaultLayout(): Int {
+        return R.layout.$layoutName
     }
 
     class ${modelName}ViewHolder : EpoxyHolder() {
@@ -88,11 +147,44 @@ abstract class ${modelName}Model : EpoxyModelWithHolder<${modelName}Model.${mode
 
         override fun bindView(itemView: View) {
             this.itemView = itemView
+            $findViewStr
         }
     }
 
+}""".trimIndent()
 }
-    """.trimIndent()
+
+/**
+ * 从布局名生成Kotlin Epoxy model代码(ViewBinding)
+ */
+fun String.generateKTEpoxyModelViewBindingCode(modelName: String): String {
+
+    val bindingClassName = this.id2FieldName(false).firstToUpperCase() + "Binding"
+
+    return """
+@EpoxyModelClass
+abstract class ${modelName}Model : EpoxyModelWithHolder<${modelName}Model.${modelName}ViewHolder>() {
+
+    override fun bind(holder: ${modelName}ViewHolder) {
+
+    }
+    
+    override fun getDefaultLayout(): Int {
+        return R.layout.$this
+    }
+
+    class ${modelName}ViewHolder : EpoxyHolder() {
+
+        lateinit var itemView: View
+        lateinit var binding: $bindingClassName
+
+        override fun bindView(itemView: View) {
+            this.itemView = itemView
+            this.binding = $bindingClassName.bind(itemView)
+        }
+    }
+
+}""".trimIndent()
 }
 
 /**
@@ -139,6 +231,31 @@ static class ${viewHolderName}ViewHolder extends RecyclerView.ViewHolder {
 }
 
 /**
+ * 从布局名生成Java ViewHolder代码(ViewBinding)
+ */
+fun String.generateJavaViewHolderViewBindingCode(viewHolderName: String, isPrivate: Boolean): String {
+
+    val bindingClassName = this.id2FieldName(false).firstToUpperCase() + "Binding"
+
+    return """
+static class ${viewHolderName}ViewHolder extends RecyclerView.ViewHolder {
+
+    public static ${viewHolderName}ViewHolder newInstance(ViewGroup parent) {
+        $bindingClassName binding = $bindingClassName.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+        return new ${viewHolderName}ViewHolder(binding);
+    }
+
+    ${if (isPrivate) "private " else ""}$bindingClassName binding;
+
+    private ${viewHolderName}ViewHolder($bindingClassName binding) {
+        super(binding.getRoot());
+        this.binding = binding;
+    }
+
+}""".trimIndent()
+}
+
+/**
  * 生成Java Epoxy model代码
  */
 fun List<ViewInfo>.generateJavaEpoxyModelCode(layoutName: String, modelName: String, addM: Boolean, isPrivate: Boolean, isTarget26: Boolean): String {
@@ -149,12 +266,17 @@ fun List<ViewInfo>.generateJavaEpoxyModelCode(layoutName: String, modelName: Str
     val findViewStr = infos.joinToString("\n\t    ") { it.getJavaFindViewString(addM, isTarget26, "itemView") }
 
     return """
-@EpoxyModelClass(layout = R.layout.$layoutName)
+@EpoxyModelClass
 public abstract class ${modelName}Model extends EpoxyModelWithHolder<${modelName}Model.${modelName}ViewHolder> {
 
     @Override
     public void bind(@NonNull ${modelName}ViewHolder holder) {
 
+    }
+    
+    @Override
+    public int getDefaultLayout() {
+        return R.layout.$layoutName;
     }
 
     static class ${modelName}ViewHolder extends EpoxyHolder {
@@ -169,4 +291,38 @@ public abstract class ${modelName}Model extends EpoxyModelWithHolder<${modelName
 
 }
     """.trimIndent()
+}
+
+/**
+ * 从布局名生成Java Epoxy model代码(ViewBinding)
+ */
+fun String.generateJavaEpoxyModelViewBindingCode(modelName: String, isPrivate: Boolean): String {
+
+    val bindingClassName = this.id2FieldName(false).firstToUpperCase() + "Binding"
+
+    return """
+@EpoxyModelClass
+public abstract class ${modelName}Model extends EpoxyModelWithHolder<${modelName}Model.${modelName}ViewHolder> {
+
+    @Override
+    public void bind(@NonNull ${modelName}ViewHolder holder) {
+
+    }
+    
+    @Override
+    public int getDefaultLayout() {
+        return R.layout.$this;
+    }
+
+    static class ${modelName}ViewHolder extends EpoxyHolder {
+
+        ${if (isPrivate) "private " else ""}$bindingClassName binding;
+
+        @Override
+        protected void bindView(@NonNull View itemView) {
+            binding = $bindingClassName.bind(itemView);
+        }
+    }
+
+}""".trimIndent()
 }

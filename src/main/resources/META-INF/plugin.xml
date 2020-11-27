@@ -4,7 +4,7 @@
     <vendor email="tyzl931019@gmail.com" url="https://github.com/tyzlmjj/FindViewForAndroid">MJJ</vendor>
 
     <description><![CDATA[
-    Generate Android 'findViewById' code.Support for Java and Kotlin.
+    Generate Android 'findViewById' and 'ViewHodler' code.Support for Java and Kotlin.
     ]]>
     </description>
 

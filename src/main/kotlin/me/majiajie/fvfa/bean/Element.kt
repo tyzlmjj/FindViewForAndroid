@@ -1,6 +1,7 @@
 package me.majiajie.fvfa.bean
 
 import me.majiajie.fvfa.extensions.firstToUpperCase
+import me.majiajie.fvfa.extensions.id2FieldName
 import java.util.regex.Pattern
 
 class Element(viewClassName: String, viewId: String) {
@@ -37,31 +38,7 @@ class Element(viewClassName: String, viewId: String) {
      * @param addM 是否添加前缀 'm'
      */
     fun getFieldName(addM: Boolean): String {
-        val fieldName: String
-        val names = id!!.split("_".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-        if (addM) {
-            // mAaBbCc
-            val sb = StringBuilder()
-            for (i in names.indices) {
-                if (i == 0) {
-                    sb.append("m")
-                }
-                sb.append(names[i].firstToUpperCase())
-            }
-            fieldName = sb.toString()
-        } else {
-            // aaBbCc
-            val sb = StringBuilder()
-            for (i in names.indices) {
-                if (i == 0) {
-                    sb.append(names[i])
-                } else {
-                    sb.append(names[i].firstToUpperCase())
-                }
-            }
-            fieldName = sb.toString()
-        }
-        return fieldName
+        return id?.id2FieldName(addM) ?: ""
     }
 
     /**
