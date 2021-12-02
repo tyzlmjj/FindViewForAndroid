@@ -112,7 +112,7 @@ class ${viewHolderName}ViewHolder private constructor(val binding: $bindingClass
     companion object {
 
         fun newInstance(parent: ViewGroup): ${viewHolderName}ViewHolder {
-            val binding = LayoutItemTextBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            val binding = $bindingClassName.inflate(LayoutInflater.from(parent.context), parent, false)
             return ${viewHolderName}ViewHolder(binding)
         }
     }

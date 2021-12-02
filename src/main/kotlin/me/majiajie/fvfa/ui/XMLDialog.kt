@@ -417,7 +417,7 @@ class XMLDialog(private val file: PsiFile, list: List<Element>) : BaseJDialog() 
             val isLocalVariable = isLocalVariableRadioButton.isSelected
             val rootView = when {
                 isLocalVariable -> edtKtRootView.text
-                isFragmentRadioButton.isSelected -> "view!!"
+                isFragmentRadioButton.isSelected -> "requireView()"
                 else -> ""
             }
             tvCode.text = when {

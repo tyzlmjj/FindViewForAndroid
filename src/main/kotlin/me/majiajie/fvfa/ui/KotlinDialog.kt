@@ -166,7 +166,7 @@ class KotlinDialog(
             val isLocalVariable = isLocalVariableRadioButton.isSelected
             val rootView = when {
                 isLocalVariable -> edtRootView.text
-                isFragmentRadioButton.isSelected -> "view!!"
+                isFragmentRadioButton.isSelected -> "requireView()"
                 else -> ""
             }
 
@@ -194,7 +194,7 @@ class KotlinDialog(
         val isLocalVariable = isLocalVariableRadioButton.isSelected
         val rootView = when {
             isLocalVariable -> edtRootView.text
-            isFragmentRadioButton.isSelected -> "view!!"
+            isFragmentRadioButton.isSelected -> "requireView()"
             else -> ""
         }
 
